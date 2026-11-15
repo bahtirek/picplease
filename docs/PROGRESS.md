@@ -21,7 +21,7 @@ Update this file at the end of every slice. A new session starts by reading it.
 See docs/open-items.md.
 
 ## Next
-Backend slice 1 (docs/backend/slices.md).
+Backend slice 2: data layer (docs/backend/slices.md). Slice 1 is done. The global error filter from slice 3 is already built; slice 3 still needs the token service, guards and rate limits.
 
 ## Session log
 (Add one line per finished slice: date, slice, what changed, anything the next session must know.)
