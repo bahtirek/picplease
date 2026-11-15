@@ -31,7 +31,8 @@ Error codes:
 | `SESSION_GONE` | 410 | Revoked, expired or closed. |
 | `UPLOAD_LIMIT_REACHED` | 429 | 5 already in flight. |
 | `RATE_LIMITED` | 429 | Too many requests. |
-| `INVALID_REQUEST` | 400 | Bad input. |
+| `INVALID_REQUEST` | 400 | Bad input. Other 4xx errors not listed here (405, 413, 415) also use this code but keep their real HTTP status. |
+| `INTERNAL_ERROR` | 500 | Unexpected server error. The message is always generic; details are only logged. |
 
 Which states allow which calls:
 

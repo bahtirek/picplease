@@ -7,7 +7,7 @@ Update this file at the end of every slice. A new session starts by reading it.
 - Server (Bluehost VPS, Ubuntu): key-only SSH (user deploy), firewall 22/80/443, Postgres 18 on localhost (database picplease, user picplease_app), Node 24, Nginx, Let's Encrypt certificates, /health placeholder.
 - DNS for picplease.app and api.picplease.app (Hostinger).
 - Cloudflare R2 buckets: picplease-photos-dev and picplease-photos-prod.
-- Backend scaffold: NestJS 12.5 on Fastify 5, TypeScript 6.0 strict, Jest 30, ESLint 10, Prettier, Node 24 pinned. Env validation at startup, GET /health, log redaction, CORS for WEB_ORIGIN only, OpenAPI export script.
+- Backend scaffold: NestJS 12.5 on Fastify 5, TypeScript 6.0 strict, Jest 30, ESLint 10, Prettier, Node 24 pinned. Env validation at startup, GET /health, global {code, message} error filter, log redaction, CORS for WEB_ORIGIN only, OpenAPI export script.
 
 ## To confirm (owner)
 - Provider snapshot of the finished server.
@@ -25,4 +25,5 @@ Backend slice 1 (docs/backend/slices.md).
 
 ## Session log
 (Add one line per finished slice: date, slice, what changed, anything the next session must know.)
-- 2026-11-15, backend scaffold: backend/ created. Notes: NestJS 12 is ESM-only; the backend compiles to CommonJS and loads Nest through Node 24 require(esm), so `npm test` sets --experimental-vm-modules. TypeScript is pinned to 6.0.x (swagger, ts-jest and typescript-eslint don't accept 7 yet). Run dev with `nest start --watch`, not tsx (esbuild drops decorator metadata). The {code, message} global exception filter isn't built yet; it needs docs/backend/api-contract.md. Only NODE_ENV, PORT and WEB_ORIGIN are validated so far; add the others as slices use them.
+- 2026-11-15, backend scaffold: backend/ created. Notes: NestJS 12 is ESM-only; the backend compiles to CommonJS and loads Nest through Node 24 require(esm), so `npm test` sets --experimental-vm-modules. TypeScript is pinned to 6.0.x (swagger, ts-jest and typescript-eslint don't accept 7 yet). Run dev with `nest start --watch`, not tsx (esbuild drops decorator metadata). Only NODE_ENV, PORT and WEB_ORIGIN are validated so far; add the others as slices use them.
+- 2026-11-15, error handler: global filter in backend/src/common/errors/. Modules throw `new AppError(code)` (leave the message out for NOT_FOUND and UNAUTHORIZED so they look identical). Nest HttpExceptions and Fastify errors are mapped too; unlisted 4xx become INVALID_REQUEST with their real status; anything else is a generic INTERNAL_ERROR (500) and is logged. INTERNAL_ERROR and the 4xx rule were added to api-contract.md (owner decision). createApp takes `imports` for test-only modules.
