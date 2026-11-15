@@ -1,0 +1,45 @@
+# Backend: API contract
+
+All JSON. Auth is `Authorization: Bearer <token>`. Errors always return `{ "code": "...", "message": "..." }`.
+
+| Endpoint | Auth | Purpose |
+|---|---|---|
+| `POST /sessions` | none, rate limited | Create. Returns session id, link, QR image (PNG, base64), requester token, expiry, limits. |
+| `POST /sessions/:id/claim` | none, rate limited | Body: pairing secret. Returns helper token, session id, limits. |
+| `GET /sessions/:id` | either token | State and timestamps. |
+| `POST /sessions/:id/revoke` | requester | Stop. |
+| `POST /sessions/:id/finish` | helper | Optional `graceSeconds` (capped at 30). No grace means finish now. |
+| `POST /sessions/:id/resume` | helper | Cancels a pending grace finish. |
+| `POST /sessions/:id/photos` | helper | Body: content type. Returns photo id, signed PUT URL, signed headers, expiry. |
+| `POST /photos/:id/confirm` | helper | Idempotent. Verifies the object, marks uploaded. |
+| `GET /sessions/:id/photos` | requester | Pending photos (uploaded, not downloaded), oldest first, plus session state. |
+| `GET /photos/:id/download` | requester | Signed GET URL. Marks nothing. |
+| `POST /photos/:id/ack` | requester | Idempotent. Marks downloaded and deletes the R2 object. |
+| `POST /sessions/:id/device` | requester | Body: platform and push token. |
+| `GET /health` | none | Liveness. |
+
+Limits object in create and claim responses: `maxInFlight`, `maxPhotoBytes`, `uploadUrlTtlSeconds`.
+
+Error codes:
+
+| Code | HTTP | Meaning |
+|---|---|---|
+| `NOT_FOUND` | 404 | Unknown session, or wrong pairing secret. The two look identical on purpose. |
+| `UNAUTHORIZED` | 401 | Missing or wrong token. Also identical for unknown sessions. |
+| `ALREADY_CLAIMED` | 409 | Someone else claimed it first. |
+| `SESSION_FINISHED` | 409 | The helper's session is finished (no new photos). |
+| `SESSION_GONE` | 410 | Revoked, expired or closed. |
+| `UPLOAD_LIMIT_REACHED` | 429 | 5 already in flight. |
+| `RATE_LIMITED` | 429 | Too many requests. |
+| `INVALID_REQUEST` | 400 | Bad input. |
+
+Which states allow which calls:
+
+| Call | Allowed in |
+|---|---|
+| issue upload URL | `claimed` |
+| confirm upload | `claimed`, `finished` |
+| finish, resume | `claimed` |
+| list pending, download URL | `claimed`, `finished` |
+| acknowledge | `claimed`, `finished` |
+| status | any state |

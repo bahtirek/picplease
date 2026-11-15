@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.pem
+*.p8
+id_ed25519*
+.DS_Store
+ios/build/
+ios/Pods/
+android/build/
+android/.gradle/
+*.log
