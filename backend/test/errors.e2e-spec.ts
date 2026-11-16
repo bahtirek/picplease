@@ -44,6 +44,7 @@ describe('errors (e2e)', () => {
         port: 0,
         webOrigin: 'https://picplease.app',
         databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
+        linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 10, windowMs: 60_000 },
       },
       { logStream: logs, imports: [ThrowingModule] },

@@ -18,6 +18,12 @@ All JSON. Auth is `Authorization: Bearer <token>`. Errors always return `{ "code
 | `POST /sessions/:id/device` | requester | Body: platform and push token. |
 | `GET /health` | none | Liveness. |
 
+Create response fields: `sessionId`, `link`, `qrPngBase64`, `requesterToken`, `expiresAt`, `limits`. Claim response: `sessionId`, `helperToken`, `limits`. Status, revoke, finish and resume return the session status (`sessionId`, `state`, and the timestamps).
+
+Claim errors (owner decision, slice 5): the secret is checked first, so a wrong secret or unknown id is `NOT_FOUND` whatever the state. Then `claimed` or `finished` is `ALREADY_CLAIMED`; pending past its expiry, `expired`, `revoked` or `closed` is `SESSION_GONE`.
+
+Finish: `graceSeconds` above 30 is capped to 30. With a grace, the state stays `claimed` and Jobs finishes it later; `resume` cancels that. Calling finish, resume or revoke in a state that does not allow it returns `SESSION_FINISHED` (finished) or `SESSION_GONE` (terminal).
+
 Limits object in create and claim responses: `maxInFlight`, `maxPhotoBytes`, `uploadUrlTtlSeconds`.
 
 Error codes:

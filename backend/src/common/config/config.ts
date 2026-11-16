@@ -11,6 +11,8 @@ export interface AppConfig {
   port: number;
   webOrigin: string;
   databaseUrl: string;
+  /** Base of the links in QR codes, e.g. https://picplease.app (no trailing slash). */
+  linkBaseUrl: string;
   /** For create and claim. RATE_LIMIT_MAX and RATE_LIMIT_WINDOW_MS are optional. */
   rateLimit: RateLimitSettings;
 }
@@ -99,6 +101,25 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
   else if (!isPostgresUrl(databaseUrl))
     problems.push('DATABASE_URL must be a postgres:// or postgresql:// URL');
 
+  const linkBaseUrl = env.LINK_BASE_URL ?? '';
+  if (!linkBaseUrl) problems.push('LINK_BASE_URL is required');
+  else {
+    let url: URL | undefined;
+    try {
+      url = new URL(linkBaseUrl);
+    } catch {
+      problems.push('LINK_BASE_URL must be a valid URL');
+    }
+    if (url) {
+      if (url.origin !== linkBaseUrl)
+        problems.push(
+          'LINK_BASE_URL must be a bare origin (scheme://host[:port], no trailing slash)',
+        );
+      if (nodeEnv === 'production' && url.protocol !== 'https:')
+        problems.push('LINK_BASE_URL must use https in production');
+    }
+  }
+
   const rateLimitMax = positiveInt(env, 'RATE_LIMIT_MAX', DEFAULT_RATE_LIMIT_MAX, problems);
   const rateLimitWindowMs = positiveInt(
     env,
@@ -113,6 +134,7 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     port,
     webOrigin,
     databaseUrl,
+    linkBaseUrl,
     rateLimit: { max: rateLimitMax, windowMs: rateLimitWindowMs },
   };
 }

@@ -60,6 +60,7 @@ export async function openTestDb(): Promise<TestDb> {
     port: 0,
     webOrigin: 'http://localhost',
     databaseUrl: url,
+    linkBaseUrl: 'https://picplease.app',
     rateLimit: { max: 10, windowMs: 60_000 },
   };
   const database = new DatabaseService(pool, config);

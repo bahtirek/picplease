@@ -1,3 +1,4 @@
+export { AnyTokenGuard } from './any-token.guard';
 export { Auth, type AuthContext, type SessionRole } from './auth-context';
 export { AuthModule } from './auth.module';
 export { HelperGuard } from './helper.guard';

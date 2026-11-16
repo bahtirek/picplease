@@ -5,6 +5,7 @@ const valid = {
   PORT: '3000',
   WEB_ORIGIN: 'https://picplease.app',
   DATABASE_URL: 'postgres://app:pw@127.0.0.1:5432/picplease',
+  LINK_BASE_URL: 'https://picplease.app',
 };
 
 function problemsFor(env: NodeJS.ProcessEnv): string[] {
@@ -24,6 +25,7 @@ describe('loadConfig', () => {
       port: 3000,
       webOrigin: 'https://picplease.app',
       databaseUrl: 'postgres://app:pw@127.0.0.1:5432/picplease',
+      linkBaseUrl: 'https://picplease.app',
       rateLimit: { max: 10, windowMs: 60_000 },
     });
   });
@@ -38,12 +40,26 @@ describe('loadConfig', () => {
       'PORT is required',
       'WEB_ORIGIN is required',
       'DATABASE_URL is required',
+      'LINK_BASE_URL is required',
     ]);
   });
 
   it.each([['0'], ['70000'], ['abc'], ['30.5']])('rejects PORT=%s', (port) => {
     expect(problemsFor({ ...valid, PORT: port })).toEqual([
       'PORT must be an integer between 1 and 65535',
+    ]);
+  });
+
+  it.each([['https://picplease.app/'], ['https://picplease.app/s'], ['nope']])(
+    'rejects LINK_BASE_URL=%s',
+    (link) => {
+      expect(problemsFor({ ...valid, LINK_BASE_URL: link })).toHaveLength(1);
+    },
+  );
+
+  it('requires https for LINK_BASE_URL in production', () => {
+    expect(problemsFor({ ...valid, LINK_BASE_URL: 'http://picplease.app' })).toEqual([
+      'LINK_BASE_URL must use https in production',
     ]);
   });
 

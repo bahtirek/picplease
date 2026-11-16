@@ -21,6 +21,171 @@
           "health"
         ]
       }
+    },
+    "/sessions": {
+      "post": {
+        "operationId": "SessionsController_create",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSessionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/sessions/{id}/claim": {
+      "post": {
+        "operationId": "SessionsController_claim",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimSessionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimSessionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/sessions/{id}": {
+      "get": {
+        "operationId": "SessionsController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatusResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/sessions/{id}/revoke": {
+      "post": {
+        "operationId": "SessionsController_revoke",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatusResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/sessions/{id}/finish": {
+      "post": {
+        "operationId": "SessionsController_finish",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatusResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "sessions"
+        ]
+      }
+    },
+    "/sessions/{id}/resume": {
+      "post": {
+        "operationId": "SessionsController_resume",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionStatusResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "sessions"
+        ]
+      }
     }
   },
   "info": {
@@ -57,6 +222,155 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "LimitsDto": {
+        "type": "object",
+        "properties": {
+          "maxInFlight": {
+            "type": "number",
+            "example": 5
+          },
+          "maxPhotoBytes": {
+            "type": "number",
+            "example": 5242880
+          },
+          "uploadUrlTtlSeconds": {
+            "type": "number",
+            "example": 600
+          }
+        },
+        "required": [
+          "maxInFlight",
+          "maxPhotoBytes",
+          "uploadUrlTtlSeconds"
+        ]
+      },
+      "CreateSessionResponse": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "link": {
+            "type": "string",
+            "description": "https://picplease.app/s/{sessionId}?t={pairingSecret}"
+          },
+          "qrPngBase64": {
+            "type": "string",
+            "description": "QR code of the link, PNG, base64"
+          },
+          "requesterToken": {
+            "type": "string",
+            "description": "Bearer token for requester calls. Shown once."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/LimitsDto"
+          }
+        },
+        "required": [
+          "sessionId",
+          "link",
+          "qrPngBase64",
+          "requesterToken",
+          "expiresAt",
+          "limits"
+        ]
+      },
+      "ClaimSessionBody": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string",
+            "description": "The pairing secret from the QR link (t parameter)"
+          }
+        },
+        "required": [
+          "secret"
+        ]
+      },
+      "ClaimSessionResponse": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "helperToken": {
+            "type": "string",
+            "description": "Bearer token for helper calls."
+          },
+          "limits": {
+            "$ref": "#/components/schemas/LimitsDto"
+          }
+        },
+        "required": [
+          "sessionId",
+          "helperToken",
+          "limits"
+        ]
+      },
+      "SessionStatusResponse": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "claimed",
+              "finished",
+              "revoked",
+              "expired",
+              "closed"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "claimedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "closedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "revokedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "sessionId",
+          "state",
+          "createdAt",
+          "expiresAt",
+          "claimedAt",
+          "finishedAt",
+          "closedAt",
+          "revokedAt"
         ]
       }
     }

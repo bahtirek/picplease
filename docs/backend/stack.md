@@ -8,6 +8,7 @@
 | Realtime | Plain WebSocket (`@nestjs/platform-ws`), JSON messages. No Socket.IO. |
 | Photo storage | Cloudflare R2 (S3-compatible API), signed URLs |
 | Rate limiting | `@fastify/rate-limit`, in-memory store (single instance). Only routes marked `@RateLimited()` are limited. |
+| QR codes | `qrcode` 1.5.4 (PNG for the create response, SVG optional). Owner-approved in slice 5. |
 | API contract | `@nestjs/swagger` generates OpenAPI. Swift, Kotlin and TypeScript models are generated from it. |
 | Hosting | One Bluehost self-managed VPS, Ubuntu 26.04 LTS, 1 vCPU, 2 GB. Nginx in front, systemd runs the app. Single instance. |
 | Domain | `picplease.app` (links and helper page), `api.picplease.app` (API and WebSocket). DNS at Hostinger. TLS by Let's Encrypt. |

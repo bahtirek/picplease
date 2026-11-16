@@ -58,6 +58,7 @@ describe('auth (e2e)', () => {
         port: 0,
         webOrigin: 'https://picplease.app',
         databaseUrl: db.databaseUrl,
+        linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 3, windowMs: 60_000 },
       },
       { silent: true, imports: [ProbeModule] },

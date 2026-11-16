@@ -92,18 +92,24 @@ export class SessionsRepository {
     return rows[0] ? toSession(rows[0]) : null;
   }
 
-  /** Claims a pending, unexpired session. Returns null if someone else got there first. */
+  /**
+   * Claims a pending, unexpired session. With secretHash, the stored secret hash must match
+   * too, in the same statement. Returns null if any condition fails (including someone else
+   * getting there first).
+   */
   async claimIfPending(
     id: string,
     helperTokenHash: string,
     db: Queryable = this.database.pool,
+    secretHash?: string,
   ): Promise<Session | null> {
     const { rows } = await db.query<SessionRow>(
       `UPDATE sessions
           SET state = 'claimed', helper_token_hash = $2, claimed_at = now(), last_activity_at = now()
         WHERE id = $1 AND state = 'pending' AND expires_at > now()
+          AND ($3::text IS NULL OR secret_hash = $3)
         RETURNING *`,
-      [id, helperTokenHash],
+      [id, helperTokenHash, secretHash ?? null],
     );
     return rows[0] ? toSession(rows[0]) : null;
   }
