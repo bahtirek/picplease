@@ -8,6 +8,7 @@ const config: AppConfig = {
   port: 0,
   webOrigin: 'https://picplease.app',
   databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
+  rateLimit: { max: 10, windowMs: 60_000 },
 };
 
 class MemoryStream extends Writable {

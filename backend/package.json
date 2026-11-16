@@ -18,6 +18,7 @@
     "openapi": "npm run build && node dist/scripts/export-openapi.js"
   },
   "dependencies": {
+    "@fastify/rate-limit": "11.2.2",
     "@nestjs/common": "12.5.0",
     "@nestjs/core": "12.5.0",
     "@nestjs/platform-fastify": "12.5.0",

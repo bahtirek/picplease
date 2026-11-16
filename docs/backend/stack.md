@@ -7,6 +7,7 @@
 | Jobs | `pg-boss` on the same Postgres |
 | Realtime | Plain WebSocket (`@nestjs/platform-ws`), JSON messages. No Socket.IO. |
 | Photo storage | Cloudflare R2 (S3-compatible API), signed URLs |
+| Rate limiting | `@fastify/rate-limit`, in-memory store (single instance). Only routes marked `@RateLimited()` are limited. |
 | API contract | `@nestjs/swagger` generates OpenAPI. Swift, Kotlin and TypeScript models are generated from it. |
 | Hosting | One Bluehost self-managed VPS, Ubuntu 26.04 LTS, 1 vCPU, 2 GB. Nginx in front, systemd runs the app. Single instance. |
 | Domain | `picplease.app` (links and helper page), `api.picplease.app` (API and WebSocket). DNS at Hostinger. TLS by Let's Encrypt. |
@@ -20,6 +21,7 @@ Environment variables (secrets only in a root-readable env file on the server, n
 | `NODE_ENV`, `PORT` | |
 | `DATABASE_URL` | localhost, user `picplease_app` |
 | `LINK_BASE_URL` | `https://picplease.app` |
+| `RATE_LIMIT_MAX`, `RATE_LIMIT_WINDOW_MS` | optional; default 10 requests per 60000 ms per IP, per limited route (create, claim) |
 | `WEB_ORIGIN` | `https://picplease.app`. The only origin allowed by CORS and by the WebSocket origin check. |
 | `EVENT_BUS` | `postgres` (or `memory` for tests) |
 | `R2_ENDPOINT` | `https://5e30bb91025217d71df1d3412cf6e152.r2.cloudflarestorage.com` |

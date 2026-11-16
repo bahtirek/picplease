@@ -24,6 +24,7 @@ describe('loadConfig', () => {
       port: 3000,
       webOrigin: 'https://picplease.app',
       databaseUrl: 'postgres://app:pw@127.0.0.1:5432/picplease',
+      rateLimit: { max: 10, windowMs: 60_000 },
     });
   });
 
@@ -82,5 +83,15 @@ describe('loadConfig', () => {
       throw new Error('expected loadConfig to throw');
     })();
     expect(err.message).not.toContain('secret-value-123');
+  });
+
+  it('uses rate limit defaults and accepts positive integer overrides', () => {
+    expect(
+      loadConfig({ ...valid, RATE_LIMIT_MAX: '20', RATE_LIMIT_WINDOW_MS: '30000' }).rateLimit,
+    ).toEqual({ max: 20, windowMs: 30_000 });
+    expect(problemsFor({ ...valid, RATE_LIMIT_MAX: '0', RATE_LIMIT_WINDOW_MS: '1.5' })).toEqual([
+      'RATE_LIMIT_MAX must be a positive integer',
+      'RATE_LIMIT_WINDOW_MS must be a positive integer',
+    ]);
   });
 });

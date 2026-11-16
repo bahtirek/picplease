@@ -1,9 +1,11 @@
 import 'reflect-metadata';
+import fastifyRateLimit from '@fastify/rate-limit';
 import type { Writable } from 'node:stream';
 import type { Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { buildRateLimitOptions } from './auth/rate-limit.config';
 import type { AppConfig } from './common/config/config';
 import { AllExceptionsFilter } from './common/errors/all-exceptions.filter';
 import { buildCorsOptions } from './common/http/cors';
@@ -36,6 +38,8 @@ export async function createApp(
     },
   );
 
+  // Registered before init so its onRoute hook sees the @RateLimited() routes.
+  await app.register(fastifyRateLimit, buildRateLimitOptions(config.rateLimit));
   app.useGlobalFilters(new AllExceptionsFilter(adapter.getInstance().log));
   app.enableCors(buildCorsOptions(config.webOrigin));
   app.enableShutdownHooks();

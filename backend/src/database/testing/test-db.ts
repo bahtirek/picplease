@@ -25,6 +25,8 @@ export function testDatabaseUrl(): string {
 
 export interface TestDb {
   pool: Pool;
+  /** Connection string bound to this file's schema, for tests that boot the whole app. */
+  databaseUrl: string;
   database: DatabaseService;
   truncateAll(): Promise<void>;
   close(): Promise<void>;
@@ -58,10 +60,14 @@ export async function openTestDb(): Promise<TestDb> {
     port: 0,
     webOrigin: 'http://localhost',
     databaseUrl: url,
+    rateLimit: { max: 10, windowMs: 60_000 },
   };
   const database = new DatabaseService(pool, config);
+  const bound = new URL(url);
+  bound.searchParams.set('options', `-c search_path=${schema}`);
   return {
     pool,
+    databaseUrl: bound.toString(),
     database,
     truncateAll: async () => {
       await pool.query('TRUNCATE sessions CASCADE');
