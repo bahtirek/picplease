@@ -39,7 +39,12 @@ describe('errors (e2e)', () => {
 
   beforeAll(async () => {
     app = await createApp(
-      { nodeEnv: 'test', port: 0, webOrigin: 'https://picplease.app' },
+      {
+        nodeEnv: 'test',
+        port: 0,
+        webOrigin: 'https://picplease.app',
+        databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
+      },
       { logStream: logs, imports: [ThrowingModule] },
     );
     await app.init();

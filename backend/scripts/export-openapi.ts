@@ -7,7 +7,12 @@ import { createApp } from '../src/app.factory';
 // No Swagger UI is mounted anywhere; the JSON file is the only output.
 async function exportOpenApi(): Promise<void> {
   const app = await createApp(
-    { nodeEnv: 'development', port: 0, webOrigin: 'https://picplease.app' },
+    {
+      nodeEnv: 'development',
+      port: 0,
+      webOrigin: 'https://picplease.app',
+      databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
+    },
     { silent: true },
   );
   await app.init();

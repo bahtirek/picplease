@@ -25,8 +25,10 @@ backend/ (NestJS on Fastify, TypeScript, Postgres), web/ (TypeScript page), ios/
 ## Commands
 Run from backend/ with Node 24 (`.nvmrc`; npm refuses other versions).
 - `npm install` — install dependencies
-- `npm run start:dev` — run with watch (needs NODE_ENV, PORT, WEB_ORIGIN in the environment)
+- `npm run start:dev` — run with watch (needs NODE_ENV, PORT, WEB_ORIGIN, DATABASE_URL in the environment)
 - `npm run build` then `npm start` — compile to dist/ and run
 - `npm test` — all Jest tests; `npm test -- <path>` for one area
 - `npm run lint` / `npm run format` / `npm run format:check`
+- `npm run migrate` — build and apply pending SQL migrations to DATABASE_URL (reads .env if present)
+- Database tests need DATABASE_URL_TEST (a database ending in `_test`). Local Postgres: `docker start picplease-pg` (localhost:5433)
 - `npm run openapi` — build and write backend/openapi.json (no docs page is served)

@@ -1,6 +1,11 @@
 import { ConfigError, loadConfig } from './config';
 
-const valid = { NODE_ENV: 'production', PORT: '3000', WEB_ORIGIN: 'https://picplease.app' };
+const valid = {
+  NODE_ENV: 'production',
+  PORT: '3000',
+  WEB_ORIGIN: 'https://picplease.app',
+  DATABASE_URL: 'postgres://app:pw@127.0.0.1:5432/picplease',
+};
 
 function problemsFor(env: NodeJS.ProcessEnv): string[] {
   try {
@@ -18,6 +23,7 @@ describe('loadConfig', () => {
       nodeEnv: 'production',
       port: 3000,
       webOrigin: 'https://picplease.app',
+      databaseUrl: 'postgres://app:pw@127.0.0.1:5432/picplease',
     });
   });
 
@@ -30,6 +36,7 @@ describe('loadConfig', () => {
       'NODE_ENV is required',
       'PORT is required',
       'WEB_ORIGIN is required',
+      'DATABASE_URL is required',
     ]);
   });
 
@@ -57,6 +64,12 @@ describe('loadConfig', () => {
     expect(
       problemsFor({ ...valid, NODE_ENV: 'development', WEB_ORIGIN: 'http://localhost:5173' }),
     ).toEqual([]);
+  });
+
+  it.each([['mysql://a:b@host/db'], ['not a url']])('rejects DATABASE_URL=%s', (url) => {
+    expect(problemsFor({ ...valid, DATABASE_URL: url })).toEqual([
+      'DATABASE_URL must be a postgres:// or postgresql:// URL',
+    ]);
   });
 
   it('never puts values in the error message', () => {

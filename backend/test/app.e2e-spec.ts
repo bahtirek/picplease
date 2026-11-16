@@ -3,7 +3,12 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { createApp } from '../src/app.factory';
 import type { AppConfig } from '../src/common/config/config';
 
-const config: AppConfig = { nodeEnv: 'test', port: 0, webOrigin: 'https://picplease.app' };
+const config: AppConfig = {
+  nodeEnv: 'test',
+  port: 0,
+  webOrigin: 'https://picplease.app',
+  databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
+};
 
 class MemoryStream extends Writable {
   lines: string[] = [];

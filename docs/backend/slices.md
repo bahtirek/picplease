@@ -26,7 +26,7 @@ Done when: tests run, /health answers, and CLAUDE.md "Commands" and docs/PROGRES
 ## Slice 2: data layer
 Read: docs/backend/state-and-data.md, docs/backend/modules/data-layer.md.
 Build: database module (transaction, direct listen connection), the four plain SQL migrations, sessions repository including the atomic claim and conditional transition.
-Done when: the Data layer tests in docs/backend/tests.md pass against a real Postgres, including two concurrent claims with exactly one winner.
+Done when: the Data layer tests in docs/backend/tests.md pass against a real Postgres, including two concurrent claims with exactly one winner. (Owner decision: the reservation test moves to slice 7b and the R2 tests to slice 7a.)
 
 ## Slice 3: auth
 Read: docs/backend/modules/auth.md, docs/backend/security.md.
@@ -51,10 +51,11 @@ Done when: the Realtime tests that do not need photos pass. This completes miles
 ## Slice 7a: R2 client
 Read: docs/backend/modules/data-layer.md (R2 section).
 Build: buildKey, signUpload, signDownload, head, delete, deleteMany. Verify R2's signing behavior for size pinning and report the result.
-Done when: the R2 client tests pass (faked) and one manual check against the dev bucket succeeds.
+Done when: the R2 client tests pass (faked, including the four R2 Data layer tests moved from slice 2) and one manual check against the dev bucket succeeds.
 
 ## Slice 7b: uploads
 Read: docs/backend/modules/uploads.md, docs/backend/api-contract.md.
+Also: photos repository with `reserveIfUnderLimit` and the Data layer test "sixth concurrent reservation refused" (moved from slice 2).
 Done when: the 9 Uploads tests pass.
 
 ## Slice 7c: delivery
