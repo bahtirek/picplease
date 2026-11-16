@@ -6,6 +6,8 @@ Endpoint `wss://api.picplease.app/ws`. The first client message is `{ "type": "a
 
 After auth the server joins the socket to its session and sends `snapshot` first: the session state, plus for the requester the pending photos.
 
+Implementation notes (slice 6): `snapshot` data is `{ role, session, pendingPhotos }`, where `session` is the same object as `GET /sessions/:id` and `pendingPhotos` is present for the requester only. A valid token for an expired, revoked or closed session closes with 4410; any other auth failure (bad JSON, wrong type, bad token) closes with 4401. A browser upgrade from an origin other than `WEB_ORIGIN` is refused with HTTP 403; no Origin header (native apps) is allowed. The server pings every 30 seconds and drops a client that missed the previous pong. Session-event messages carry `{ sessionId }`. Clients send nothing after auth; anything later is ignored.
+
 | Message | To | When |
 |---|---|---|
 | `snapshot` | both | right after auth and after every reconnect |

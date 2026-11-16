@@ -10,6 +10,7 @@ import type { AppConfig } from './common/config/config';
 import { AllExceptionsFilter } from './common/errors/all-exceptions.filter';
 import { buildCorsOptions } from './common/http/cors';
 import { buildLoggerOptions } from './common/logging/logger-options';
+import { RealtimeWsAdapter } from './realtime/realtime-ws.adapter';
 
 export interface CreateAppOptions {
   /** Where request logs go. Defaults to stdout. Tests pass a stream to inspect output. */
@@ -42,6 +43,7 @@ export async function createApp(
   await app.register(fastifyRateLimit, buildRateLimitOptions(config.rateLimit));
   app.useGlobalFilters(new AllExceptionsFilter(adapter.getInstance().log));
   app.enableCors(buildCorsOptions(config.webOrigin));
+  app.useWebSocketAdapter(new RealtimeWsAdapter(app, config.webOrigin));
   app.enableShutdownHooks();
   return app;
 }
