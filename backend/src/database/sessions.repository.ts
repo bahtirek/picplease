@@ -19,6 +19,8 @@ export interface Session {
   closedAt: Date | null;
   revokedAt: Date | null;
   lastActivityAt: Date;
+  /** Pending photos (reserved, not yet confirmed or discarded). Kept by PhotosRepository. */
+  photosInFlight: number;
 }
 
 interface SessionRow {
@@ -34,6 +36,7 @@ interface SessionRow {
   closed_at: Date | null;
   revoked_at: Date | null;
   last_activity_at: Date;
+  photos_in_flight: number;
 }
 
 export const DEFAULT_SESSION_TTL_SECONDS = 5 * 60;
@@ -60,6 +63,7 @@ function toSession(row: SessionRow): Session {
     closedAt: row.closed_at,
     revokedAt: row.revoked_at,
     lastActivityAt: row.last_activity_at,
+    photosInFlight: row.photos_in_flight,
   };
 }
 

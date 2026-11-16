@@ -20,6 +20,8 @@ All JSON. Auth is `Authorization: Bearer <token>`. Errors always return `{ "code
 
 Create response fields: `sessionId`, `link`, `qrPngBase64`, `requesterToken`, `expiresAt`, `limits`. Claim response: `sessionId`, `helperToken`, `limits`. Status, revoke, finish and resume return the session status (`sessionId`, `state`, and the timestamps).
 
+Uploads (slice 7b): `POST /sessions/:id/photos` takes `{ contentType }`, which must be `image/jpeg` (owner decision; anything else is `INVALID_REQUEST`). It returns `photoId`, `url`, `headers` (send them with the PUT exactly as given) and `expiresAt`. Not claimed: `SESSION_FINISHED` (finished) or `SESSION_GONE`; full: `UPLOAD_LIMIT_REACHED`. `POST /photos/:id/confirm` returns `{ photoId, status: "uploaded" }`. Unknown or another session's photo is `NOT_FOUND`. Object not there yet: `INVALID_REQUEST`, the photo stays pending and confirm can be retried. Empty, over 5 MB or wrong content type: `INVALID_REQUEST`, and the object and photo are discarded (`photo.discarded`). On a revoked, expired or closed session the helper token is refused (`UNAUTHORIZED`).
+
 Claim errors (owner decision, slice 5): the secret is checked first, so a wrong secret or unknown id is `NOT_FOUND` whatever the state. Then `claimed` or `finished` is `ALREADY_CLAIMED`; pending past its expiry, `expired`, `revoked` or `closed` is `SESSION_GONE`.
 
 Finish: `graceSeconds` above 30 is capped to 30. With a grace, the state stays `claimed` and Jobs finishes it later; `resume` cancels that. Calling finish, resume or revoke in a state that does not allow it returns `SESSION_FINISHED` (finished) or `SESSION_GONE` (terminal).

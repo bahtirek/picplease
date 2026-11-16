@@ -64,6 +64,7 @@ describe('DatabaseService and migrations (real Postgres)', () => {
         '002_photos.sql',
         '003_devices.sql',
         '004_indexes.sql',
+        '005_photos_in_flight.sql',
       ]);
     } finally {
       client.release();

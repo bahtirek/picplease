@@ -4,6 +4,7 @@ import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({})
 export class AppModule {
@@ -11,7 +12,14 @@ export class AppModule {
     return {
       module: AppModule,
       global: true,
-      imports: [DatabaseModule, HealthModule, SessionsModule, RealtimeModule, ...extraImports],
+      imports: [
+        DatabaseModule,
+        HealthModule,
+        SessionsModule,
+        UploadsModule,
+        RealtimeModule,
+        ...extraImports,
+      ],
       providers: [{ provide: APP_CONFIG, useValue: config }],
       exports: [APP_CONFIG],
     };
