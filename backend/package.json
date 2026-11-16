@@ -14,7 +14,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "NODE_OPTIONS=\"--experimental-vm-modules --disable-warning=ExperimentalWarning\" jest",
+    "test": "node --env-file=.env --experimental-vm-modules ./node_modules/.bin/jest",
     "openapi": "npm run build && node dist/scripts/export-openapi.js",
     "r2:check": "npm run build && node --env-file-if-exists=.env dist/scripts/r2-check.js"
   },
