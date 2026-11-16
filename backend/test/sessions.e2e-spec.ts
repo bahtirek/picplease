@@ -2,6 +2,7 @@ import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { createApp } from '../src/app.factory';
 import { openTestDb, type TestDb } from '../src/database/testing/test-db';
 import { EVENT_BUS, type EventPayload, type PostgresEventBus } from '../src/eventbus';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 describe('sessions API (e2e)', () => {
   let db: TestDb;
@@ -18,6 +19,7 @@ describe('sessions API (e2e)', () => {
         databaseUrl: db.databaseUrl,
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 100, windowMs: 60_000 },
+        r2: { ...TEST_R2_SETTINGS },
       },
       { silent: true },
     );

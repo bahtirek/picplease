@@ -3,6 +3,7 @@ import { Body, Controller, Get, Module, Post } from '@nestjs/common';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { createApp } from '../src/app.factory';
 import { AppError } from '../src/common/errors';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 @Controller('test-errors')
 class ThrowingController {
@@ -46,6 +47,7 @@ describe('errors (e2e)', () => {
         databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 10, windowMs: 60_000 },
+        r2: { ...TEST_R2_SETTINGS },
       },
       { logStream: logs, imports: [ThrowingModule] },
     );

@@ -6,6 +6,10 @@ const valid = {
   WEB_ORIGIN: 'https://picplease.app',
   DATABASE_URL: 'postgres://app:pw@127.0.0.1:5432/picplease',
   LINK_BASE_URL: 'https://picplease.app',
+  R2_ENDPOINT: 'https://account.r2.cloudflarestorage.com',
+  R2_BUCKET: 'picplease-photos-dev',
+  R2_ACCESS_KEY_ID: 'key-id',
+  R2_SECRET_ACCESS_KEY: 'key-secret',
 };
 
 function problemsFor(env: NodeJS.ProcessEnv): string[] {
@@ -27,6 +31,12 @@ describe('loadConfig', () => {
       databaseUrl: 'postgres://app:pw@127.0.0.1:5432/picplease',
       linkBaseUrl: 'https://picplease.app',
       rateLimit: { max: 10, windowMs: 60_000 },
+      r2: {
+        endpoint: 'https://account.r2.cloudflarestorage.com',
+        bucket: 'picplease-photos-dev',
+        accessKeyId: 'key-id',
+        secretAccessKey: 'key-secret',
+      },
     });
   });
 
@@ -41,6 +51,10 @@ describe('loadConfig', () => {
       'WEB_ORIGIN is required',
       'DATABASE_URL is required',
       'LINK_BASE_URL is required',
+      'R2_ENDPOINT is required',
+      'R2_BUCKET is required',
+      'R2_ACCESS_KEY_ID is required',
+      'R2_SECRET_ACCESS_KEY is required',
     ]);
   });
 
@@ -109,5 +123,32 @@ describe('loadConfig', () => {
       'RATE_LIMIT_MAX must be a positive integer',
       'RATE_LIMIT_WINDOW_MS must be a positive integer',
     ]);
+  });
+
+  it('refuses the production bucket outside production', () => {
+    const prodBucket = { ...valid, R2_BUCKET: 'picplease-photos-prod' };
+    expect(problemsFor(prodBucket)).toEqual([]);
+    for (const nodeEnv of ['development', 'test']) {
+      expect(problemsFor({ ...prodBucket, NODE_ENV: nodeEnv })).toEqual([
+        'R2_BUCKET must not be the production bucket outside production',
+      ]);
+    }
+  });
+
+  it.each([['http://account.r2.cloudflarestorage.com'], ['nope']])(
+    'rejects R2_ENDPOINT=%s',
+    (endpoint) => {
+      expect(problemsFor({ ...valid, R2_ENDPOINT: endpoint })).toHaveLength(1);
+    },
+  );
+
+  it('never puts the R2 secret in the error message', () => {
+    try {
+      loadConfig({ ...valid, R2_BUCKET: 'Bad_Bucket', R2_SECRET_ACCESS_KEY: 'very-secret-r2' });
+    } catch (e) {
+      expect((e as Error).message).not.toContain('very-secret-r2');
+      return;
+    }
+    throw new Error('expected loadConfig to throw');
   });
 });

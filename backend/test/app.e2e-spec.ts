@@ -2,6 +2,7 @@ import { Writable } from 'node:stream';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { createApp } from '../src/app.factory';
 import type { AppConfig } from '../src/common/config/config';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 const config: AppConfig = {
   nodeEnv: 'test',
@@ -10,6 +11,7 @@ const config: AppConfig = {
   databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
   linkBaseUrl: 'https://picplease.app',
   rateLimit: { max: 10, windowMs: 60_000 },
+  r2: { ...TEST_R2_SETTINGS },
 };
 
 class MemoryStream extends Writable {

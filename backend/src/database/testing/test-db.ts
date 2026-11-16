@@ -5,6 +5,7 @@ import { Client, Pool } from 'pg';
 import type { AppConfig } from '../../common/config/config';
 import { DatabaseService } from '../database.service';
 import { runMigrations } from '../migrate';
+import { TEST_R2_SETTINGS } from './in-memory-r2';
 
 /**
  * Reads DATABASE_URL_TEST (loaded from backend/.env when present). Refuses any database
@@ -62,6 +63,7 @@ export async function openTestDb(): Promise<TestDb> {
     databaseUrl: url,
     linkBaseUrl: 'https://picplease.app',
     rateLimit: { max: 10, windowMs: 60_000 },
+    r2: { ...TEST_R2_SETTINGS },
   };
   const database = new DatabaseService(pool, config);
   const bound = new URL(url);

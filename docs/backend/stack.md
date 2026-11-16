@@ -6,7 +6,7 @@
 | Database | PostgreSQL 18 on the same server, plain SQL through the `pg` driver, no ORM. Direct (non-pooled) connection is required. |
 | Jobs | `pg-boss` on the same Postgres |
 | Realtime | Plain WebSocket (`@nestjs/platform-ws` 12.5.0 with its peer `@nestjs/websockets` 12.5.0, which bring `ws`; `@types/ws` for development), JSON messages. No Socket.IO. Owner-approved in slice 6. |
-| Photo storage | Cloudflare R2 (S3-compatible API), signed URLs |
+| Photo storage | Cloudflare R2 (S3-compatible API), signed URLs. `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner` 3.1169.0 (region `auto`, path-style). Owner-approved in slice 7a. |
 | Rate limiting | `@fastify/rate-limit`, in-memory store (single instance). Only routes marked `@RateLimited()` are limited. |
 | QR codes | `qrcode` 1.5.4 (PNG for the create response, SVG optional). Owner-approved in slice 5. |
 | API contract | `@nestjs/swagger` generates OpenAPI. Swift, Kotlin and TypeScript models are generated from it. |

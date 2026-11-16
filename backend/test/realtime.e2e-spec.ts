@@ -4,6 +4,7 @@ import { createApp } from '../src/app.factory';
 import { openTestDb, type TestDb } from '../src/database/testing/test-db';
 import { EVENT_BUS, type PostgresEventBus } from '../src/eventbus';
 import { PresenceService } from '../src/realtime/presence.service';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 interface Message {
   type: string;
@@ -29,6 +30,7 @@ describe('realtime (e2e)', () => {
         databaseUrl: db.databaseUrl,
         linkBaseUrl: WEB_ORIGIN,
         rateLimit: { max: 100, windowMs: 60_000 },
+        r2: { ...TEST_R2_SETTINGS },
       },
       { silent: true },
     );

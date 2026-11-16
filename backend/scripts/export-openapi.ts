@@ -2,6 +2,7 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createApp } from '../src/app.factory';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 // Generates the contract without starting a server or needing a real environment.
 // No Swagger UI is mounted anywhere; the JSON file is the only output.
@@ -14,6 +15,7 @@ async function exportOpenApi(): Promise<void> {
       databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
       linkBaseUrl: 'https://picplease.app',
       rateLimit: { max: 10, windowMs: 60_000 },
+      r2: { ...TEST_R2_SETTINGS },
     },
     { silent: true },
   );

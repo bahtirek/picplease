@@ -3,6 +3,7 @@ import {
   DEFAULT_RATE_LIMIT_WINDOW_MS,
   type RateLimitSettings,
 } from '../../auth/rate-limit.config';
+import type { R2Settings } from '../../database/r2.client';
 
 export type NodeEnv = 'development' | 'test' | 'production';
 
@@ -15,7 +16,11 @@ export interface AppConfig {
   linkBaseUrl: string;
   /** For create and claim. RATE_LIMIT_MAX and RATE_LIMIT_WINDOW_MS are optional. */
   rateLimit: RateLimitSettings;
+  /** Photo bucket. Never the production bucket outside production. */
+  r2: R2Settings;
 }
+
+export const PRODUCTION_BUCKET = 'picplease-photos-prod';
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
 
@@ -128,6 +133,30 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     problems,
   );
 
+  const r2Endpoint = env.R2_ENDPOINT ?? '';
+  if (!r2Endpoint) problems.push('R2_ENDPOINT is required');
+  else {
+    let url: URL | undefined;
+    try {
+      url = new URL(r2Endpoint);
+    } catch {
+      problems.push('R2_ENDPOINT must be a valid URL');
+    }
+    if (url && url.protocol !== 'https:') problems.push('R2_ENDPOINT must use https');
+  }
+
+  const r2Bucket = env.R2_BUCKET ?? '';
+  if (!r2Bucket) problems.push('R2_BUCKET is required');
+  else if (!/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(r2Bucket))
+    problems.push('R2_BUCKET must be a valid bucket name');
+  else if (nodeEnv !== 'production' && r2Bucket === PRODUCTION_BUCKET)
+    problems.push('R2_BUCKET must not be the production bucket outside production');
+
+  const r2AccessKeyId = env.R2_ACCESS_KEY_ID ?? '';
+  if (!r2AccessKeyId) problems.push('R2_ACCESS_KEY_ID is required');
+  const r2SecretAccessKey = env.R2_SECRET_ACCESS_KEY ?? '';
+  if (!r2SecretAccessKey) problems.push('R2_SECRET_ACCESS_KEY is required');
+
   if (problems.length > 0) throw new ConfigError(problems);
   return {
     nodeEnv,
@@ -136,5 +165,11 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
     databaseUrl,
     linkBaseUrl,
     rateLimit: { max: rateLimitMax, windowMs: rateLimitWindowMs },
+    r2: {
+      endpoint: r2Endpoint,
+      bucket: r2Bucket,
+      accessKeyId: r2AccessKeyId,
+      secretAccessKey: r2SecretAccessKey,
+    },
   };
 }

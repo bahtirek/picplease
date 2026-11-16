@@ -15,9 +15,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules --disable-warning=ExperimentalWarning\" jest",
-    "openapi": "npm run build && node dist/scripts/export-openapi.js"
+    "openapi": "npm run build && node dist/scripts/export-openapi.js",
+    "r2:check": "npm run build && node --env-file-if-exists=.env dist/scripts/r2-check.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1169.0",
+    "@aws-sdk/s3-request-presigner": "3.1169.0",
     "@fastify/rate-limit": "11.2.2",
     "@nestjs/common": "12.5.0",
     "@nestjs/core": "12.5.0",

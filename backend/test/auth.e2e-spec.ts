@@ -13,6 +13,7 @@ import {
 } from '../src/auth';
 import { SessionsRepository } from '../src/database/sessions.repository';
 import { openTestDb, type TestDb } from '../src/database/testing/test-db';
+import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 
 @Controller('auth-test/:id')
 class ProbeController {
@@ -60,6 +61,7 @@ describe('auth (e2e)', () => {
         databaseUrl: db.databaseUrl,
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 3, windowMs: 60_000 },
+        r2: { ...TEST_R2_SETTINGS },
       },
       { silent: true, imports: [ProbeModule] },
     );
