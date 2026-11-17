@@ -21,6 +21,7 @@ describe('uploads API (e2e)', () => {
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 100, windowMs: 60_000 },
         r2: { ...TEST_R2_SETTINGS },
+        push: { apns: null, fcm: null },
       },
       { silent: true },
     );

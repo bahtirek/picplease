@@ -16,7 +16,7 @@ States: `pending`, `claimed`, `finished`, `revoked`, `expired`, `closed`.
 
 ## Data model
 
-**sessions**: `id` (random UUID), `state`, `secret_hash`, `helper_token_hash`, `requester_token_hash`, `created_at`, `expires_at` (created + 5 min), `claimed_at`, `finished_at`, `closed_at`, `revoked_at`, `last_activity_at`.
+**sessions**: `id` (random UUID), `state`, `secret_hash`, `helper_token_hash`, `requester_token_hash`, `created_at`, `expires_at` (created + 5 min), `claimed_at`, `finished_at`, `closed_at`, `revoked_at`, `last_activity_at`, `photos_in_flight` (migration 005), `last_push_at` (migration 006, the 60 s push cooldown).
 
 **photos**: `id` (random UUID), `session_id` (cascade delete), `r2_key`, `status` (`pending` or `uploaded`), `content_type`, `size_bytes`, `url_expires_at`, `created_at`, `uploaded_at`, `downloaded_at`, `object_deleted_at`.
 
@@ -24,6 +24,6 @@ States: `pending`, `claimed`, `finished`, `revoked`, `expired`, `closed`.
 
 Indexes: sessions on (`state`, `last_activity_at`) and on `created_at`; photos on (`session_id`, `status`) and on `created_at`.
 
-Migrations are ordered plain `.sql` files: `001_sessions`, `002_photos`, `003_devices`, `004_indexes`.
+Migrations are ordered plain `.sql` files: `001_sessions`, `002_photos`, `003_devices`, `004_indexes`, `005_photos_in_flight`, `006_push_cooldown`.
 
 R2 object key: built by the server only, `sessions/{sessionId}/{photoId}.jpg`. Never from client input.

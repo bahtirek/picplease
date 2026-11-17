@@ -13,4 +13,9 @@
 | Limits | 5 in flight, 5 MB per photo, 10 minute upload URL, 10 minute download URL (owner decision, slice 7c), JPEG only (owner decision, slice 7b) |
 | Proposed rate limits | 10 per minute per IP for create and claim |
 
-Open (not decided): lifetime photo cap per session, content moderation (must be settled before launch), the 36 hour reminder push.
+| Lifetime photo cap | None for now (owner decision, slice 8b). Only the 5 in flight limit. |
+| 36 hour reminder push | Dropped for now (owner decision, slice 8b). |
+| Push burst | At most one photo push per session per 60 s, plus a per-session collapse key (owner decision, slice 8b). |
+| Push client | APNs and FCM through Node built-ins (`node:http2`, `fetch`, `node:crypto`), no push library (owner decision, slice 8b). |
+
+Open (not decided): content moderation (must be settled before launch).

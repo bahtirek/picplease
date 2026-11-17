@@ -16,8 +16,3 @@ export function checkObject(
   if (info.contentType !== photo.contentType) return 'Photo has the wrong content type';
   return null;
 }
-
-/** Undecided placeholder (docs/open-items.md): a cap on photos over a session's lifetime. Allows everything. */
-export function checkLifetimeCap(): void {
-  // Intentionally empty until the owner decides the cap.
-}

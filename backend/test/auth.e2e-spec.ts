@@ -62,6 +62,7 @@ describe('auth (e2e)', () => {
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 3, windowMs: 60_000 },
         r2: { ...TEST_R2_SETTINGS },
+        push: { apns: null, fcm: null },
       },
       { silent: true, imports: [ProbeModule] },
     );

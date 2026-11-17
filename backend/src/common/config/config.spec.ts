@@ -37,6 +37,7 @@ describe('loadConfig', () => {
         accessKeyId: 'key-id',
         secretAccessKey: 'key-secret',
       },
+      push: { apns: null, fcm: null },
     });
   });
 
@@ -133,6 +134,35 @@ describe('loadConfig', () => {
         'R2_BUCKET must not be the production bucket outside production',
       ]);
     }
+  });
+
+  it('reads push settings; APNS_* is all or nothing', () => {
+    const apnsEnv = {
+      APNS_KEY_ID: 'KEY123',
+      APNS_TEAM_ID: 'TEAM123',
+      APNS_BUNDLE_ID: 'app.picplease.mobile',
+      APNS_KEY_FILE: '/etc/picplease/apns.p8',
+    };
+    expect(
+      loadConfig({ ...valid, ...apnsEnv, FCM_SERVICE_ACCOUNT_FILE: '/etc/picplease/fcm.json' })
+        .push,
+    ).toEqual({
+      apns: {
+        ...{ keyId: 'KEY123', teamId: 'TEAM123', bundleId: 'app.picplease.mobile' },
+        keyFile: '/etc/picplease/apns.p8',
+        environment: 'production',
+      },
+      fcm: { serviceAccountFile: '/etc/picplease/fcm.json' },
+    });
+    expect(
+      loadConfig({ ...valid, ...apnsEnv, NODE_ENV: 'development' }).push.apns?.environment,
+    ).toBe('sandbox');
+    expect(problemsFor({ ...valid, APNS_KEY_ID: 'KEY123' })).toEqual([
+      'APNS_TEAM_ID is required when any APNS_* variable is set',
+      'APNS_BUNDLE_ID is required when any APNS_* variable is set',
+      'APNS_KEY_FILE is required when any APNS_* variable is set',
+    ]);
+    expect(problemsFor({ ...valid, APNS_ENVIRONMENT: 'staging' })).toHaveLength(1);
   });
 
   it.each([['http://account.r2.cloudflarestorage.com'], ['nope']])(

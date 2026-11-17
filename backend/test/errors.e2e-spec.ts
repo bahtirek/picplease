@@ -48,6 +48,7 @@ describe('errors (e2e)', () => {
         linkBaseUrl: 'https://picplease.app',
         rateLimit: { max: 10, windowMs: 60_000 },
         r2: { ...TEST_R2_SETTINGS },
+        push: { apns: null, fcm: null },
       },
       { logStream: logs, imports: [ThrowingModule] },
     );

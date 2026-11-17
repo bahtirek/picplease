@@ -9,7 +9,7 @@ import { EVENT_BUS, type EventBus } from '../eventbus';
 import { isTerminal, stateErrorCode } from '../sessions/session-state';
 import { SessionsService } from '../sessions/sessions.service';
 import { MODERATION_HOOK, type ModerationHook } from './moderation.hook';
-import { checkLifetimeCap, checkObject } from './upload-limits';
+import { checkObject } from './upload-limits';
 import { photoEvent } from './upload.events';
 import {
   CONFIRM_STATES,
@@ -59,7 +59,6 @@ export class UploadsService {
 
   /** Session must be claimed and have fewer than 5 photos in flight. */
   async issueUploadUrl(sessionId: string, contentType: UploadContentType): Promise<IssuedUpload> {
-    checkLifetimeCap();
     const photoId = randomUUID();
     const r2Key = buildKey(sessionId, photoId);
     const photo = await this.photos.reserveIfUnderLimit(

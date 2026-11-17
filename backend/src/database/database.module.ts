@@ -2,6 +2,7 @@ import { Global, Logger, Module } from '@nestjs/common';
 import { Pool } from 'pg';
 import { APP_CONFIG, type AppConfig } from '../common/config/config';
 import { DatabaseService, PG_POOL } from './database.service';
+import { DevicesRepository } from './devices.repository';
 import { PhotosRepository } from './photos.repository';
 import { R2_CLIENT, S3R2Client } from './r2.client';
 import { SessionsRepository } from './sessions.repository';
@@ -35,7 +36,8 @@ export function createPool(databaseUrl: string): Pool {
     DatabaseService,
     SessionsRepository,
     PhotosRepository,
+    DevicesRepository,
   ],
-  exports: [DatabaseService, SessionsRepository, PhotosRepository, R2_CLIENT],
+  exports: [DatabaseService, SessionsRepository, PhotosRepository, DevicesRepository, R2_CLIENT],
 })
 export class DatabaseModule {}

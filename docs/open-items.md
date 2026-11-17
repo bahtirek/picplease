@@ -2,11 +2,11 @@
 
 ## Backend
 
-Lifetime photo cap (needed before step 3). Content moderation (before launch). The 36 hour reminder (before Notifications). Rate limit values and the proposed size and lifetime numbers can be tuned.
+Content moderation (before launch). Rate limit values and the proposed size and lifetime numbers can be tuned.
 
 ## Mobile
 
-Which platform first. Minimum OS versions. Flash and front-camera switch. Lifetime photo cap, content moderation and the 36 hour reminder (backend decisions that affect UI). Final wording of the proposed strings. Accessibility (VoiceOver and TalkBack for the camera and QR flows) is not designed yet. Privacy policy, store listings and an abuse-report path are needed before launch.
+Which platform first. Minimum OS versions. Flash and front-camera switch. Content moderation (a backend decision that affects UI). Decided in slice 8b: no lifetime photo cap and no 36 hour reminder for now. Final wording of the proposed strings. Accessibility (VoiceOver and TalkBack for the camera and QR flows) is not designed yet. Privacy policy, store listings and an abuse-report path are needed before launch.
 
 ## Also pending
 

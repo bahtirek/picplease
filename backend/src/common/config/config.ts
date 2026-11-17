@@ -4,6 +4,8 @@ import {
   type RateLimitSettings,
 } from '../../auth/rate-limit.config';
 import type { R2Settings } from '../../database/r2.client';
+import type { ApnsSettings } from '../../notifications/apns.provider';
+import type { FcmSettings } from '../../notifications/fcm.provider';
 
 export type NodeEnv = 'development' | 'test' | 'production';
 
@@ -18,6 +20,8 @@ export interface AppConfig {
   rateLimit: RateLimitSettings;
   /** Photo bucket. Never the production bucket outside production. */
   r2: R2Settings;
+  /** Push credentials. Each provider is optional; null turns that platform's pushes off. */
+  push: { apns: ApnsSettings | null; fcm: FcmSettings | null };
 }
 
 export const PRODUCTION_BUCKET = 'picplease-photos-prod';
@@ -157,6 +161,10 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
   const r2SecretAccessKey = env.R2_SECRET_ACCESS_KEY ?? '';
   if (!r2SecretAccessKey) problems.push('R2_SECRET_ACCESS_KEY is required');
 
+  const apns = loadApns(env, nodeEnv, problems);
+  const fcmFile = env.FCM_SERVICE_ACCOUNT_FILE ?? '';
+  const fcm: FcmSettings | null = fcmFile ? { serviceAccountFile: fcmFile } : null;
+
   if (problems.length > 0) throw new ConfigError(problems);
   return {
     nodeEnv,
@@ -171,5 +179,33 @@ export function loadConfig(env: NodeJS.ProcessEnv): AppConfig {
       accessKeyId: r2AccessKeyId,
       secretAccessKey: r2SecretAccessKey,
     },
+    push: { apns, fcm },
+  };
+}
+
+const APNS_REQUIRED = ['APNS_KEY_ID', 'APNS_TEAM_ID', 'APNS_BUNDLE_ID', 'APNS_KEY_FILE'] as const;
+
+/** All four APNS_* variables or none. APNS_ENVIRONMENT defaults to production only in production. */
+function loadApns(
+  env: NodeJS.ProcessEnv,
+  nodeEnv: NodeEnv,
+  problems: string[],
+): ApnsSettings | null {
+  const set = APNS_REQUIRED.filter((name) => env[name]);
+  const environment = env.APNS_ENVIRONMENT || (nodeEnv === 'production' ? 'production' : 'sandbox');
+  if (environment !== 'production' && environment !== 'sandbox')
+    problems.push('APNS_ENVIRONMENT must be production or sandbox');
+  if (set.length === 0) return null;
+  if (set.length < APNS_REQUIRED.length) {
+    for (const name of APNS_REQUIRED)
+      if (!env[name]) problems.push(`${name} is required when any APNS_* variable is set`);
+    return null;
+  }
+  return {
+    keyId: env.APNS_KEY_ID ?? '',
+    teamId: env.APNS_TEAM_ID ?? '',
+    bundleId: env.APNS_BUNDLE_ID ?? '',
+    keyFile: env.APNS_KEY_FILE ?? '',
+    environment: environment === 'production' ? 'production' : 'sandbox',
   };
 }

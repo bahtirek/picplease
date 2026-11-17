@@ -16,6 +16,7 @@ async function exportOpenApi(): Promise<void> {
       linkBaseUrl: 'https://picplease.app',
       rateLimit: { max: 10, windowMs: 60_000 },
       r2: { ...TEST_R2_SETTINGS },
+      push: { apns: null, fcm: null },
     },
     { silent: true },
   );

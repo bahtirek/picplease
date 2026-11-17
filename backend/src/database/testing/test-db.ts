@@ -64,6 +64,7 @@ export async function openTestDb(): Promise<TestDb> {
     linkBaseUrl: 'https://picplease.app',
     rateLimit: { max: 10, windowMs: 60_000 },
     r2: { ...TEST_R2_SETTINGS },
+    push: { apns: null, fcm: null },
   };
   const database = new DatabaseService(pool, config);
   const bound = new URL(url);

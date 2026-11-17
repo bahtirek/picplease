@@ -28,7 +28,9 @@ Environment variables (secrets only in a root-readable env file on the server, n
 | `R2_ENDPOINT` | `https://5e30bb91025217d71df1d3412cf6e152.r2.cloudflarestorage.com` |
 | `R2_BUCKET` | `picplease-photos-prod` on the server, `picplease-photos-dev` for development |
 | `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | separate tokens for dev and prod, each limited to its own bucket |
-| `APNS_*`, `FCM_*` | push credentials, added in milestone 3 |
+| `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_BUNDLE_ID`, `APNS_KEY_FILE` | optional, all four or none; `APNS_KEY_FILE` is the path to the `.p8` key (readable by the app user). Without them iOS pushes are off. |
+| `APNS_ENVIRONMENT` | optional, `production` or `sandbox`; defaults to `production` only when NODE_ENV=production |
+| `FCM_SERVICE_ACCOUNT_FILE` | optional, path to the Firebase service account JSON. Without it Android pushes are off. |
 
 
 ## Tooling
