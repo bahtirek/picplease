@@ -88,8 +88,8 @@ describe('SessionsRepository (real Postgres)', () => {
     );
     for (const id of [old.id, fresh.id]) {
       await db.pool.query(
-        `INSERT INTO photos (session_id, r2_key, content_type, url_expires_at)
-         VALUES ($1::uuid, 'sessions/' || $1::text || '/p.jpg', 'image/jpeg', now())`,
+        `INSERT INTO photos (session_id, r2_key, content_type, url_expires_at, object_deleted_at)
+         VALUES ($1::uuid, 'sessions/' || $1::text || '/p.jpg', 'image/jpeg', now(), now())`,
         [id],
       );
       await db.pool.query(
@@ -98,8 +98,7 @@ describe('SessionsRepository (real Postgres)', () => {
       );
     }
 
-    const cutoff = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
-    expect(await repo.purgeCreatedBefore(cutoff)).toBe(1);
+    expect(await repo.purgeSettled(2 * 24 * 60 * 60)).toBe(1);
 
     const count = async (table: string, id: string) =>
       (

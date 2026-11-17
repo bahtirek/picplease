@@ -116,7 +116,7 @@ async function main(): Promise<void> {
     check(
       'issue upload URL',
       issued.status === 200,
-      `status ${String(issued.status)} ${String((issued.body as { code?: string }).code ?? '')}`,
+      `status ${String(issued.status)} ${(issued.body as { code?: string }).code ?? ''}`,
     );
     if (issued.status !== 200) throw new Error('cannot continue without an upload URL');
     const jpeg = sampleJpeg();

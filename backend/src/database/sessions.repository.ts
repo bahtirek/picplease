@@ -163,12 +163,6 @@ export class SessionsRepository {
     return rows.map((r) => r.id);
   }
 
-  /** Deletes sessions created before cutoff; photos and devices go with them. Returns the count. */
-  async purgeCreatedBefore(cutoff: Date, db: Queryable = this.database.pool): Promise<number> {
-    const { rowCount } = await db.query('DELETE FROM sessions WHERE created_at < $1', [cutoff]);
-    return rowCount ?? 0;
-  }
-
   /**
    * The 48 hour purge: deletes sessions created more than olderThanSeconds ago whose photos
    * all have their R2 object deleted, so no row holding a live key is lost. Photos and
