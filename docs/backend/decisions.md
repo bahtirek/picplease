@@ -17,5 +17,6 @@
 | 36 hour reminder push | Dropped for now (owner decision, slice 8b). |
 | Push burst | At most one photo push per session per 60 s, plus a per-session collapse key (owner decision, slice 8b). |
 | Push client | APNs and FCM through Node built-ins (`node:http2`, `fetch`, `node:crypto`), no push library (owner decision, slice 8b). |
+| Deploy | Build on the owner's machine, rsync the compiled release to `/opt/picplease/releases/`, switch the `current` symlink, migrate through a one-shot unit, restart; `/health` reports commit and build time; app runs as user `picplease`; `pgboss` schema created once by an admin (owner decisions, slice 9; docs/backend/deploy.md). |
 
 Open (not decided): content moderation (must be settled before launch).

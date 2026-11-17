@@ -1,0 +1,17 @@
+# /etc/systemd/system/picplease-migrate.service
+# Applies pending SQL migrations from the current release. Started by deploy.sh before the API restart.
+[Unit]
+Description=PicPlease database migrations
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+User=picplease
+Group=picplease
+WorkingDirectory=/opt/picplease/current
+EnvironmentFile=/etc/picplease/api.env
+ExecStart=/usr/bin/node dist/scripts/migrate.js
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true

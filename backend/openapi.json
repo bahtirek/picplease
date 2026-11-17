@@ -351,6 +351,35 @@
           "delivery"
         ]
       }
+    },
+    "/sessions/{id}/device": {
+      "post": {
+        "operationId": "DevicesController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Registered (or updated if this token was already set)."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "notifications"
+        ]
+      }
     }
   },
   "info": {
@@ -374,6 +403,25 @@
       }
     },
     "schemas": {
+      "HealthBuild": {
+        "type": "object",
+        "properties": {
+          "commit": {
+            "type": "string",
+            "description": "Short git commit, or \"unknown\" outside a build",
+            "example": "51bea1d"
+          },
+          "builtAt": {
+            "type": "string",
+            "description": "ISO time of the build, or \"unknown\"",
+            "example": "2026-11-16T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "commit",
+          "builtAt"
+        ]
+      },
       "HealthResponse": {
         "type": "object",
         "properties": {
@@ -383,10 +431,14 @@
               "ok"
             ],
             "example": "ok"
+          },
+          "build": {
+            "$ref": "#/components/schemas/HealthBuild"
           }
         },
         "required": [
-          "status"
+          "status",
+          "build"
         ]
       },
       "LimitsDto": {
@@ -695,6 +747,26 @@
         "required": [
           "photoId",
           "status"
+        ]
+      },
+      "RegisterDeviceBody": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android"
+            ]
+          },
+          "pushToken": {
+            "type": "string",
+            "description": "APNs device token (hex) or FCM registration token."
+          }
+        },
+        "required": [
+          "platform",
+          "pushToken"
         ]
       }
     }

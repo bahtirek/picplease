@@ -14,6 +14,7 @@ Read only what the current task needs. Do not load everything.
 | Endpoints, error codes, which states allow which calls | docs/backend/api-contract.md |
 | WebSocket messages and internal events | docs/backend/protocol-and-events.md |
 | One backend module (sessions, uploads, delivery, realtime, notifications, jobs, eventbus, auth, data-layer) | docs/backend/modules/NAME.md |
+| Backend deploy: server layout, one-time setup, deploy and rollback | docs/backend/deploy.md |
 | Backend security rules | docs/backend/security.md |
 | Backend test cases | docs/backend/tests.md |
 | Mobile decisions, wording, structure | docs/mobile/decisions.md, ui-wording.md, structure.md |

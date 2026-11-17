@@ -15,7 +15,7 @@
 
 Already done on the server: key-only SSH (user `deploy`), firewall (22, 80, 443), Postgres on `127.0.0.1:5432` with database `picplease` and limited user `picplease_app`, Nginx, certificates, a `/health` endpoint placeholder.
 
-Environment variables (secrets only in a root-readable env file on the server, never in git):
+Environment variables (secrets only in `/etc/picplease/api.env` on the server, `root:picplease` 0640, never in git; see deploy.md):
 
 | Variable | Notes |
 |---|---|

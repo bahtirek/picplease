@@ -33,3 +33,4 @@ Run from backend/ with Node 24 (`.nvmrc`; npm refuses other versions).
 - Database tests need DATABASE_URL_TEST (a database ending in `_test`). Local Postgres: `docker start picplease-pg` (localhost:5433)
 - `npm run delivery:check` — scripted client: one photo end to end through the API and the dev bucket (needs a migrated `*_dev` DATABASE_URL and the dev R2 settings)
 - `npm run openapi` — build and write backend/openapi.json (no docs page is served)
+- `npm run deploy` — owner only: build HEAD, upload to the VPS, migrate, restart, check /health; `npm run deploy -- rollback` (docs/backend/deploy.md)

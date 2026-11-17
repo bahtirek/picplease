@@ -5,6 +5,7 @@ import {
   type OnApplicationBootstrap,
   type OnApplicationShutdown,
 } from '@nestjs/common';
+import { Client } from 'pg';
 import { type JobWithMetadata, PgBoss } from 'pg-boss';
 import { APP_CONFIG, type AppConfig } from '../common/config/config';
 import { SessionsRepository } from '../database/sessions.repository';
@@ -32,6 +33,8 @@ export class SchedulerService implements OnApplicationBootstrap, OnApplicationSh
   private readonly logger = new Logger(SchedulerService.name);
   private readonly boss: PgBoss;
   private readonly pollingIntervalSeconds: number;
+  private readonly databaseUrl: string;
+  private readonly schema: string;
   private unsubscribers: Unsubscribe[] = [];
 
   constructor(
@@ -45,9 +48,14 @@ export class SchedulerService implements OnApplicationBootstrap, OnApplicationSh
     private readonly hardDelete: HardDeleteJob,
   ) {
     this.pollingIntervalSeconds = settings.pollingIntervalSeconds;
+    this.databaseUrl = config.databaseUrl;
+    this.schema = settings.schema;
     this.boss = new PgBoss({
       connectionString: config.databaseUrl,
       schema: settings.schema,
+      // ensureSchema() creates it only when missing. pg-boss's own CREATE SCHEMA IF NOT EXISTS
+      // needs CREATE on the database even when the schema exists, which the production user lacks.
+      createSchema: false,
       max: 3,
       application_name: 'picplease-jobs',
     });
@@ -57,6 +65,7 @@ export class SchedulerService implements OnApplicationBootstrap, OnApplicationSh
   }
 
   async onApplicationBootstrap(): Promise<void> {
+    await this.ensureSchema();
     await this.boss.start();
     for (const name of Object.values(QUEUES)) await this.boss.createQueue(name);
 
@@ -73,6 +82,25 @@ export class SchedulerService implements OnApplicationBootstrap, OnApplicationSh
       this.bus.subscribe('session.finish-requested', (p) => this.onFinishRequested(p)),
       this.bus.subscribe('session.resumed', (p) => this.onResumed(p)),
     ];
+  }
+
+  /**
+   * Creates the pg-boss schema if it is missing. In production an admin creates it beforehand
+   * (owned by the app user), so this only checks; tests and dev create it here.
+   */
+  private async ensureSchema(): Promise<void> {
+    const client = new Client({ connectionString: this.databaseUrl });
+    await client.connect();
+    try {
+      const { rows } = await client.query<{ present: boolean }>(
+        'SELECT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = $1) AS present',
+        [this.schema],
+      );
+      if (!rows[0]?.present)
+        await client.query(`CREATE SCHEMA ${client.escapeIdentifier(this.schema)}`);
+    } finally {
+      await client.end();
+    }
   }
 
   async onApplicationShutdown(): Promise<void> {

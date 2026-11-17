@@ -16,7 +16,7 @@ All JSON. Auth is `Authorization: Bearer <token>`. Errors always return `{ "code
 | `GET /photos/:id/download` | requester | Signed GET URL. Marks nothing. |
 | `POST /photos/:id/ack` | requester | Idempotent. Marks downloaded and deletes the R2 object. |
 | `POST /sessions/:id/device` | requester | Body: platform and push token. |
-| `GET /health` | none | Liveness. |
+| `GET /health` | none | Liveness. Returns `{ status: "ok", build: { commit, builtAt } }` (short git commit, `-dirty` if built from uncommitted changes; both `unknown` outside a build). Owner decision, slice 9. |
 
 Create response fields: `sessionId`, `link`, `qrPngBase64`, `requesterToken`, `expiresAt`, `limits`. Claim response: `sessionId`, `helperToken`, `limits`. Status, revoke, finish and resume return the session status (`sessionId`, `state`, and the timestamps).
 

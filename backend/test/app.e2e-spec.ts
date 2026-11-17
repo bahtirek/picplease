@@ -38,10 +38,13 @@ describe('app (e2e)', () => {
   });
 
   describe('GET /health', () => {
-    it('returns {"status":"ok"}', async () => {
+    it('returns status ok and the build (unknown outside a build)', async () => {
       const res = await app.inject({ method: 'GET', url: '/health' });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toEqual({ status: 'ok' });
+      expect(res.json()).toEqual({
+        status: 'ok',
+        build: { commit: 'unknown', builtAt: 'unknown' },
+      });
     });
   });
 

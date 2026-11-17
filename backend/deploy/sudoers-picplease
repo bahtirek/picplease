@@ -1,0 +1,3 @@
+# /etc/sudoers.d/picplease  (install with: visudo -cf <file>, then root:root 0440)
+# The deploy user may only run migrations and restart the API.
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl start picplease-migrate.service, /usr/bin/systemctl restart picplease-api.service

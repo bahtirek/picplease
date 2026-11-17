@@ -7,7 +7,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && rm -rf dist/src/database/migrations && cp -R src/database/migrations dist/src/database/migrations",
+    "build": "tsc -p tsconfig.build.json && rm -rf dist/src/database/migrations && cp -R src/database/migrations dist/src/database/migrations && node dist/scripts/write-build-info.js",
     "start": "node dist/src/main.js",
     "start:dev": "nest start --watch",
     "migrate": "npm run build && node --env-file-if-exists=.env dist/scripts/migrate.js",
@@ -17,7 +17,8 @@
     "test": "node --env-file=.env --experimental-vm-modules ./node_modules/.bin/jest",
     "openapi": "npm run build && node dist/scripts/export-openapi.js",
     "r2:check": "npm run build && node --env-file-if-exists=.env dist/scripts/r2-check.js",
-    "delivery:check": "npm run build && node --env-file-if-exists=.env dist/scripts/delivery-check.js"
+    "delivery:check": "npm run build && node --env-file-if-exists=.env dist/scripts/delivery-check.js",
+    "deploy": "bash deploy/deploy.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1169.0",

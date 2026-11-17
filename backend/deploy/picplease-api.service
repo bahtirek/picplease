@@ -1,0 +1,32 @@
+# /etc/systemd/system/picplease-api.service
+[Unit]
+Description=PicPlease API
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=picplease
+Group=picplease
+WorkingDirectory=/opt/picplease/current
+EnvironmentFile=/etc/picplease/api.env
+ExecStart=/usr/bin/node dist/src/main.js
+Restart=on-failure
+RestartSec=2
+# The app drains WebSockets and stops pg-boss on SIGTERM (pg-boss waits up to 10 s).
+TimeoutStopSec=20
+
+# Hardening: the app writes nothing to disk; logs go to the journal.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

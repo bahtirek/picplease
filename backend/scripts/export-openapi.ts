@@ -9,7 +9,8 @@ import { TEST_R2_SETTINGS } from '../src/database/testing/in-memory-r2';
 async function exportOpenApi(): Promise<void> {
   const app = await createApp(
     {
-      nodeEnv: 'development',
+      // test leaves Jobs (pg-boss) out, so no database is needed; Jobs has no routes.
+      nodeEnv: 'test',
       port: 0,
       webOrigin: 'https://picplease.app',
       databaseUrl: 'postgres://user:pass@127.0.0.1:5432/unused',
