@@ -1,6 +1,10 @@
+import { randomUUID } from 'node:crypto';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { WebSocket } from 'ws';
 import { createApp } from '../src/app.factory';
+import { DatabaseService } from '../src/database/database.service';
+import { PhotosRepository } from '../src/database/photos.repository';
+import { buildKey } from '../src/database/r2-key';
 import { openTestDb, type TestDb } from '../src/database/testing/test-db';
 import { EVENT_BUS, type PostgresEventBus } from '../src/eventbus';
 import { PresenceService } from '../src/realtime/presence.service';
@@ -117,6 +121,32 @@ describe('realtime (e2e)', () => {
     return { ...client, snapshot };
   }
 
+  /**
+   * What a successful confirm does (reserve, mark uploaded, publish photo.uploaded in the
+   * same transaction), without R2: the app's R2 client points at an invalid endpoint.
+   */
+  async function uploadPhoto(sessionId: string): Promise<string> {
+    const photos = app.get(PhotosRepository);
+    const photoId = randomUUID();
+    await photos.reserveIfUnderLimit(
+      {
+        photoId,
+        sessionId,
+        r2Key: buildKey(sessionId, photoId),
+        contentType: 'image/jpeg',
+        ttlSeconds: 600,
+      },
+      5,
+    );
+    await app.get(DatabaseService).transaction(async (tx) => {
+      expect(await photos.markUploaded(photoId, 1234, ['claimed'], tx)).not.toBeNull();
+      await app
+        .get<PostgresEventBus>(EVENT_BUS)
+        .publish('photo.uploaded', { sessionId, photoId }, tx);
+    });
+    return photoId;
+  }
+
   const until = async (check: () => boolean) => {
     for (let i = 0; i < 100 && !check(); i++) await new Promise((r) => setTimeout(r, 10));
     return check();
@@ -211,5 +241,42 @@ describe('realtime (e2e)', () => {
     const helper = await join(await claim(s.sessionId, s.secret));
     expect(presence.isRequesterOnline(s.sessionId)).toBe(false);
     helper.ws.close();
+  });
+
+  it('requester gets photo.ready', async () => {
+    const s = await create();
+    const requester = await join(s.requesterToken);
+    await claim(s.sessionId, s.secret);
+    await requester.nth(2); // session.claimed
+    const photoId = await uploadPhoto(s.sessionId);
+    expect(await requester.nth(3)).toEqual({
+      type: 'photo.ready',
+      data: { sessionId: s.sessionId, photoId },
+    });
+  });
+
+  it('helper gets no photo events', async () => {
+    const s = await create();
+    const requester = await join(s.requesterToken);
+    const helperToken = await claim(s.sessionId, s.secret);
+    const helper = await join(helperToken);
+    await uploadPhoto(s.sessionId);
+    expect((await requester.nth(3)).type).toBe('photo.ready');
+    // A later event to the helper proves nothing photo-related was sent before it.
+    await call('POST', `/sessions/${s.sessionId}/finish`, helperToken);
+    await helper.nth(2);
+    expect(helper.messages.map((m) => m.type)).toEqual(['snapshot', 'session.finished']);
+  });
+
+  it('reconnect snapshot includes pending photos', async () => {
+    const s = await create();
+    await claim(s.sessionId, s.secret);
+    const first = await uploadPhoto(s.sessionId);
+    const second = await uploadPhoto(s.sessionId);
+    const { snapshot } = await join(s.requesterToken);
+    expect(snapshot.data.pendingPhotos).toEqual([
+      { photoId: first, sizeBytes: 1234, uploadedAt: expect.any(String) as string },
+      { photoId: second, sizeBytes: 1234, uploadedAt: expect.any(String) as string },
+    ]);
   });
 });

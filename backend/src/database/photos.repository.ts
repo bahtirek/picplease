@@ -50,6 +50,13 @@ function toPhoto(row: PhotoRow): Photo {
   };
 }
 
+export interface WindowCounts {
+  state: SessionState;
+  inFlight: number;
+  left: number;
+  delivered: number;
+}
+
 export interface Reservation {
   photoId: string;
   sessionId: string;
@@ -122,6 +129,91 @@ export class PhotosRepository {
       [id, sizeBytes, [...sessionStates]],
     );
     return rows[0] ? toPhoto(rows[0]) : null;
+  }
+
+  /**
+   * Photos the requester has not saved yet: uploaded, not downloaded, object still in R2.
+   * Oldest first. Also the set revoke deletes.
+   */
+  async listPending(sessionId: string, db: Queryable = this.database.pool): Promise<Photo[]> {
+    const { rows } = await db.query<PhotoRow>(
+      `SELECT * FROM photos
+        WHERE session_id = $1 AND status = 'uploaded'
+          AND downloaded_at IS NULL AND object_deleted_at IS NULL
+        ORDER BY uploaded_at, id`,
+      [sessionId],
+    );
+    return rows.map(toPhoto);
+  }
+
+  /**
+   * uploaded -> downloaded, only for a photo of `sessionId` while the session is in one
+   * of `sessionStates`. Returns null if it was already downloaded, not uploaded, belongs
+   * to another session or the session state does not match.
+   */
+  async markDownloaded(
+    id: string,
+    sessionId: string,
+    sessionStates: readonly SessionState[],
+    db: Queryable = this.database.pool,
+  ): Promise<Photo | null> {
+    const { rows } = await db.query<PhotoRow>(
+      `UPDATE photos SET downloaded_at = now()
+        WHERE id = $1 AND session_id = $2 AND status = 'uploaded' AND downloaded_at IS NULL
+          AND EXISTS (SELECT 1 FROM sessions
+                       WHERE sessions.id = photos.session_id AND state = ANY($3::text[]))
+        RETURNING *`,
+      [id, sessionId, [...sessionStates]],
+    );
+    return rows[0] ? toPhoto(rows[0]) : null;
+  }
+
+  /** Records that the objects are gone from R2. Returns how many rows changed. */
+  async markObjectsDeleted(
+    ids: readonly string[],
+    db: Queryable = this.database.pool,
+  ): Promise<number> {
+    if (ids.length === 0) return 0;
+    const { rowCount } = await db.query(
+      `UPDATE photos SET object_deleted_at = now()
+        WHERE id = ANY($1::uuid[]) AND object_deleted_at IS NULL`,
+      [[...ids]],
+    );
+    return rowCount ?? 0;
+  }
+
+  /**
+   * The delivery window counts, in one statement: session state, photos in flight
+   * (pending), left (uploaded, not downloaded, object not deleted) and delivered
+   * (downloaded). Null for an unknown session.
+   */
+  async windowCounts(
+    sessionId: string,
+    db: Queryable = this.database.pool,
+  ): Promise<WindowCounts | null> {
+    const { rows } = await db.query<{
+      state: SessionState;
+      in_flight: number;
+      remaining: number;
+      delivered: number;
+    }>(
+      `SELECT s.state, s.photos_in_flight AS in_flight,
+              (count(p.id) FILTER (WHERE p.status = 'uploaded' AND p.downloaded_at IS NULL
+                                     AND p.object_deleted_at IS NULL))::int AS remaining,
+              (count(p.id) FILTER (WHERE p.downloaded_at IS NOT NULL))::int AS delivered
+         FROM sessions s LEFT JOIN photos p ON p.session_id = s.id
+        WHERE s.id = $1
+        GROUP BY s.id`,
+      [sessionId],
+    );
+    const row = rows[0];
+    if (!row) return null;
+    return {
+      state: row.state,
+      inFlight: row.in_flight,
+      left: row.remaining,
+      delivered: row.delivered,
+    };
   }
 
   /** Deletes a pending photo and frees its slot. Returns null if it was not pending. */

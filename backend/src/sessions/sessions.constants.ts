@@ -3,6 +3,7 @@ export const SESSION_LIMITS = {
   maxInFlight: 5,
   maxPhotoBytes: 5 * 1024 * 1024,
   uploadUrlTtlSeconds: 10 * 60,
+  downloadUrlTtlSeconds: 10 * 60,
 } as const;
 
 export type SessionLimits = typeof SESSION_LIMITS;

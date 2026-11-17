@@ -2,22 +2,19 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { SessionRole } from '../auth';
 import { type SessionStatus, SessionsService } from '../sessions/sessions.service';
 
-/** A photo the requester has not saved yet. Filled in by Delivery (slice 8). */
+/** A photo the requester has not saved yet (same item as `GET /sessions/:id/photos`). */
 export interface PendingPhoto {
   photoId: string;
+  sizeBytes: number;
+  uploadedAt: string;
 }
 
-/** Where the requester's pending photos come from. Delivery provides it in slice 8. */
+/** Where the requester's pending photos come from. Delivery provides it. */
 export interface PendingPhotosSource {
   listPending(sessionId: string): Promise<PendingPhoto[]>;
 }
 
 export const PENDING_PHOTOS_SOURCE = Symbol('PENDING_PHOTOS_SOURCE');
-
-/** Until Delivery exists there are no photos. */
-export const noPendingPhotos: PendingPhotosSource = {
-  listPending: () => Promise.resolve([]),
-};
 
 export interface Snapshot {
   role: SessionRole;

@@ -18,6 +18,8 @@ Implementation notes (slice 6): `snapshot` data is `{ role, session, pendingPhot
 | `session.ended` | helper | requester revoked |
 | `session.finished` | helper | finished by the idle rule or grace timer |
 
+Implementation notes (slice 7c): a message's data is the internal event's payload. `photo.ready` is `{ sessionId, photoId }`; `window.closed` is `{ sessionId, delivered }`. Each `pendingPhotos` item in the snapshot is `{ photoId, sizeBytes, uploadedAt }`, the same as `GET /sessions/:id/photos`.
+
 Clients ignore unknown message types.
 
 ## Internal events (EventBus)

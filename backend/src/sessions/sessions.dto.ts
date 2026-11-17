@@ -9,6 +9,7 @@ export class LimitsDto {
   @ApiProperty({ example: 5 }) maxInFlight!: number;
   @ApiProperty({ example: 5242880 }) maxPhotoBytes!: number;
   @ApiProperty({ example: 600 }) uploadUrlTtlSeconds!: number;
+  @ApiProperty({ example: 600 }) downloadUrlTtlSeconds!: number;
 }
 
 export class CreateSessionResponse {

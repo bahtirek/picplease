@@ -186,6 +186,171 @@
           "sessions"
         ]
       }
+    },
+    "/sessions/{id}/photos": {
+      "post": {
+        "operationId": "UploadsController_issue",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueUploadBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueUploadResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "uploads"
+        ]
+      },
+      "get": {
+        "operationId": "DeliveryController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PendingListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "delivery"
+        ]
+      }
+    },
+    "/photos/{photoId}/confirm": {
+      "post": {
+        "operationId": "UploadsController_confirm",
+        "parameters": [
+          {
+            "name": "photoId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmUploadResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "uploads"
+        ]
+      }
+    },
+    "/photos/{photoId}/download": {
+      "get": {
+        "operationId": "DeliveryController_download",
+        "parameters": [
+          {
+            "name": "photoId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadUrlResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "delivery"
+        ]
+      }
+    },
+    "/photos/{photoId}/ack": {
+      "post": {
+        "operationId": "DeliveryController_ack",
+        "parameters": [
+          {
+            "name": "photoId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcknowledgeResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "delivery"
+        ]
+      }
     }
   },
   "info": {
@@ -238,12 +403,17 @@
           "uploadUrlTtlSeconds": {
             "type": "number",
             "example": 600
+          },
+          "downloadUrlTtlSeconds": {
+            "type": "number",
+            "example": 600
           }
         },
         "required": [
           "maxInFlight",
           "maxPhotoBytes",
-          "uploadUrlTtlSeconds"
+          "uploadUrlTtlSeconds",
+          "downloadUrlTtlSeconds"
         ]
       },
       "CreateSessionResponse": {
@@ -371,6 +541,160 @@
           "finishedAt",
           "closedAt",
           "revokedAt"
+        ]
+      },
+      "IssueUploadBody": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/jpeg"
+            ],
+            "example": "image/jpeg"
+          }
+        },
+        "required": [
+          "contentType"
+        ]
+      },
+      "IssueUploadResponse": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "description": "Signed PUT URL. Upload the photo bytes here, not to the API."
+          },
+          "headers": {
+            "type": "object",
+            "description": "Headers to send with the PUT exactly as given; they are signed.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "photoId",
+          "url",
+          "headers",
+          "expiresAt"
+        ]
+      },
+      "ConfirmUploadResponse": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "uploaded"
+            ]
+          }
+        },
+        "required": [
+          "photoId",
+          "status"
+        ]
+      },
+      "PendingPhotoDto": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sizeBytes": {
+            "type": "number",
+            "example": 2097152
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "photoId",
+          "sizeBytes",
+          "uploadedAt"
+        ]
+      },
+      "PendingListResponse": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "claimed",
+              "finished",
+              "revoked",
+              "expired",
+              "closed"
+            ]
+          },
+          "photos": {
+            "description": "Oldest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PendingPhotoDto"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "photos"
+        ]
+      },
+      "DownloadUrlResponse": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "description": "Signed GET URL. Download the bytes from here, not the API."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "photoId",
+          "url",
+          "expiresAt"
+        ]
+      },
+      "AcknowledgeResponse": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "downloaded"
+            ]
+          }
+        },
+        "required": [
+          "photoId",
+          "status"
         ]
       }
     }

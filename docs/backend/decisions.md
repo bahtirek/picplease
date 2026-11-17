@@ -10,7 +10,7 @@
 | Upload URL timing | Requested at the shutter, in parallel with compression, signed for the 5 MB maximum. The head check enforces the real size. |
 | Session row retention | Deleted at 48 hours with the photos |
 | EventBus | Postgres `LISTEN/NOTIFY` behind an interface. In-memory for tests. Redis later. |
-| Proposed limits | 5 in flight, 5 MB per photo, 10 minute upload URL, 10 minute download URL, JPEG only |
+| Limits | 5 in flight, 5 MB per photo, 10 minute upload URL, 10 minute download URL (owner decision, slice 7c), JPEG only (owner decision, slice 7b) |
 | Proposed rate limits | 10 per minute per IP for create and claim |
 
 Open (not decided): lifetime photo cap per session, content moderation (must be settled before launch), the 36 hour reminder push.

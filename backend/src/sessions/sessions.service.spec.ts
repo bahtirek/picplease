@@ -80,7 +80,12 @@ describe('SessionsService', () => {
 
     expect(s.link).toBe(`https://picplease.app/s/${s.sessionId}?t=${s.secret}`);
     expect(Buffer.from(s.qrPngBase64, 'base64').subarray(1, 4).toString()).toBe('PNG');
-    expect(s.limits).toEqual({ maxInFlight: 5, maxPhotoBytes: 5242880, uploadUrlTtlSeconds: 600 });
+    expect(s.limits).toEqual({
+      maxInFlight: 5,
+      maxPhotoBytes: 5242880,
+      uploadUrlTtlSeconds: 600,
+      downloadUrlTtlSeconds: 600,
+    });
 
     const { rows } = await db.pool.query<Record<string, unknown>>(
       'SELECT * FROM sessions WHERE id = $1',

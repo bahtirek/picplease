@@ -1,6 +1,7 @@
 import { type DynamicModule, Module, type Type } from '@nestjs/common';
 import { APP_CONFIG, type AppConfig } from './common/config/config';
 import { DatabaseModule } from './database/database.module';
+import { DeliveryModule } from './delivery/delivery.module';
 import { HealthModule } from './health/health.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { SessionsModule } from './sessions/sessions.module';
@@ -17,6 +18,7 @@ export class AppModule {
         HealthModule,
         SessionsModule,
         UploadsModule,
+        DeliveryModule,
         RealtimeModule,
         ...extraImports,
       ],
