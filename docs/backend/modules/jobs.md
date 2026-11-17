@@ -12,4 +12,9 @@ Files: `scheduler.service.ts`, `expire-pairing.job.ts`, `inactivity.job.ts`, `st
 | Stale uploads | Every minute, `Uploads.reconcileStale` for pending photos whose URL has expired. |
 | Hard delete | Delete R2 objects for photos downloaded or older than 48 hours, then delete session rows older than 48 hours (cascades). |
 
+Owner decisions (slice 8a):
+- Hard delete runs every 15 minutes. A session older than 48 hours keeps its row until every one of its photos has `object_deleted_at` set, so a refused R2 delete is retried on the next run instead of losing the key.
+- Stale uploads picks pending photos whose URL expired at least 60 seconds ago, so an upload started just before expiry can finish.
+- pg-boss lives in its own schema `pgboss` and is left out of the app when NODE_ENV=test; Jobs tests build the services themselves with a throwaway pg-boss schema.
+
 Correctness never depends on a timer: `claimSession` checks the expiry timestamp itself.

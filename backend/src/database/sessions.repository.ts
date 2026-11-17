@@ -168,4 +168,23 @@ export class SessionsRepository {
     const { rowCount } = await db.query('DELETE FROM sessions WHERE created_at < $1', [cutoff]);
     return rowCount ?? 0;
   }
+
+  /**
+   * The 48 hour purge: deletes sessions created more than olderThanSeconds ago whose photos
+   * all have their R2 object deleted, so no row holding a live key is lost. Photos and
+   * devices go with them. Returns the count.
+   */
+  async purgeSettled(
+    olderThanSeconds: number,
+    db: Queryable = this.database.pool,
+  ): Promise<number> {
+    const { rowCount } = await db.query(
+      `DELETE FROM sessions s
+        WHERE s.created_at < now() - make_interval(secs => $1)
+          AND NOT EXISTS (SELECT 1 FROM photos p
+                           WHERE p.session_id = s.id AND p.object_deleted_at IS NULL)`,
+      [olderThanSeconds],
+    );
+    return rowCount ?? 0;
+  }
 }

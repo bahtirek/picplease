@@ -216,6 +216,46 @@ export class PhotosRepository {
     };
   }
 
+  /**
+   * Pending photos whose upload URL expired more than marginSeconds ago, oldest first.
+   * The margin lets an upload that started just before expiry finish first.
+   */
+  async findStalePending(
+    marginSeconds: number,
+    limit = 100,
+    db: Queryable = this.database.pool,
+  ): Promise<Photo[]> {
+    const { rows } = await db.query<PhotoRow>(
+      `SELECT * FROM photos
+        WHERE status = 'pending' AND url_expires_at < now() - make_interval(secs => $1)
+        ORDER BY url_expires_at, id
+        LIMIT $2`,
+      [marginSeconds, limit],
+    );
+    return rows.map(toPhoto);
+  }
+
+  /**
+   * Photos whose R2 object should go: downloaded (a delete after ack that failed) or
+   * created more than olderThanSeconds ago, object not yet marked deleted. Oldest first.
+   */
+  async findForObjectCleanup(
+    olderThanSeconds: number,
+    limit = 1000,
+    db: Queryable = this.database.pool,
+  ): Promise<Photo[]> {
+    const { rows } = await db.query<PhotoRow>(
+      `SELECT * FROM photos
+        WHERE object_deleted_at IS NULL
+          AND (downloaded_at IS NOT NULL
+               OR created_at < now() - make_interval(secs => $1))
+        ORDER BY created_at, id
+        LIMIT $2`,
+      [olderThanSeconds, limit],
+    );
+    return rows.map(toPhoto);
+  }
+
   /** Deletes a pending photo and frees its slot. Returns null if it was not pending. */
   async discardPending(id: string, db: Queryable = this.database.pool): Promise<Photo | null> {
     const { rows } = await db.query<PhotoRow>(
