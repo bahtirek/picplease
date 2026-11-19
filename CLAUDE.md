@@ -34,3 +34,7 @@ Run from backend/ with Node 24 (`.nvmrc`; npm refuses other versions).
 - `npm run delivery:check` — scripted client: one photo end to end through the API and the dev bucket (needs a migrated `*_dev` DATABASE_URL and the dev R2 settings)
 - `npm run openapi` — build and write backend/openapi.json (no docs page is served)
 - `npm run deploy` — owner only: build HEAD, upload to the VPS, migrate, restart, check /health; `npm run deploy -- rollback` (docs/backend/deploy.md)
+
+iOS (from ios/, Xcode 26, iOS 17+; decisions in docs/mobile/decisions.md):
+- `xcodebuild test -project PicPlease.xcodeproj -scheme PicPlease -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.3.1'` — all iOS tests (package and app-hosted)
+- `swift format lint -r PicPlease PicPleaseTests PicPleaseKit/Sources PicPleaseKit/Tests` — lint; `swift format format -i -r ...` to format

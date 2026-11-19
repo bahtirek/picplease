@@ -13,3 +13,7 @@ ios/Pods/
 android/build/
 android/.gradle/
 *.log
+ios/**/xcuserdata/
+ios/**/.build/
+ios/**/.swiftpm/
+*.xcresult
