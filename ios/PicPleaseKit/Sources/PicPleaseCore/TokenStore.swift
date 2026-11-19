@@ -74,3 +74,12 @@ public struct KeychainTokenStore: TokenStoring {
         guard status == errSecSuccess || status == errSecItemNotFound else { throw KeychainError(status: status) }
     }
 }
+
+extension TokenStoring {
+    /// The session a stored token belongs to. Tokens are `sessionId.random` (docs/backend/modules/auth.md).
+    public func sessionId(for role: Role) -> String? {
+        guard let token = load(role), let dot = token.firstIndex(of: ".") else { return nil }
+        let id = token[..<dot]
+        return id.isEmpty ? nil : String(id)
+    }
+}

@@ -50,6 +50,17 @@
                ReferencedContainer = "container:PicPleaseKit">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PicPleaseRequesterTests"
+               BuildableName = "PicPleaseRequesterTests"
+               BlueprintName = "PicPleaseRequesterTests"
+               ReferencedContainer = "container:PicPleaseKit">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

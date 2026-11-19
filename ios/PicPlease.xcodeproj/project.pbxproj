@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* PicPleaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000002 /* PicPleaseCore */; };
+		A10000000000000000000004 /* PicPleaseRequester in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000005 /* PicPleaseRequester */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000001 /* PicPleaseCore in Frameworks */,
+				A10000000000000000000004 /* PicPleaseRequester in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +100,7 @@
 			name = PicPlease;
 			packageProductDependencies = (
 				A10000000000000000000002 /* PicPleaseCore */,
+				A10000000000000000000005 /* PicPleaseRequester */,
 			);
 			productName = PicPlease;
 			productReference = A10000000000000000000011 /* PicPlease.app */;
@@ -260,12 +263,15 @@
 		A10000000000000000000041 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PicPlease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44NBW3DS2Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PicPlease;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "PicPlease saves the photos people take for you to your library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "PicPlease needs full access only to remove a received photo you choose to delete.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -284,12 +290,15 @@
 		A10000000000000000000042 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PicPlease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44NBW3DS2Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PicPlease;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "PicPlease saves the photos people take for you to your library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "PicPlease needs full access only to remove a received photo you choose to delete.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -374,6 +383,10 @@
 		A10000000000000000000002 /* PicPleaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PicPleaseCore;
+		};
+		A10000000000000000000005 /* PicPleaseRequester */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PicPleaseRequester;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
