@@ -17,3 +17,6 @@ ios/**/xcuserdata/
 ios/**/.build/
 ios/**/.swiftpm/
 *.xcresult
+*.p12
+*.cer
+*.mobileprovision

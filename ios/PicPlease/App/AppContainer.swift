@@ -8,15 +8,23 @@ final class AppContainer {
     let config: AppConfig
     let tokens: TokenStoring
     let api: ApiClient
+    let connectivity: ConnectivityMonitoring
 
-    init(config: AppConfig, tokens: TokenStoring) {
+    init(config: AppConfig, tokens: TokenStoring, connectivity: ConnectivityMonitoring) {
         self.config = config
         self.tokens = tokens
         self.api = ApiClient(config: config, tokens: tokens)
+        self.connectivity = connectivity
+    }
+
+    /// One live connection per role; the role's store owns it and iterates `events()`.
+    func realtime(for role: Role) -> RealtimeClient {
+        RealtimeClient(config: config, role: role, tokens: tokens)
     }
 
     static func live() -> AppContainer {
-        AppContainer(config: .make(currentEnvironment), tokens: KeychainTokenStore())
+        AppContainer(
+            config: .make(currentEnvironment), tokens: KeychainTokenStore(), connectivity: ConnectivityMonitor())
     }
 
     static func forBackgroundWork() -> AppContainer {
