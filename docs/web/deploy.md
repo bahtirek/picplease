@@ -50,7 +50,7 @@ Checked in W7 (2026-11-19) with the config in an `nginx:stable` container: `ngin
 
 ## App link files
 
-- `apple-app-site-association`: `/s/*` opens `44NBW3DS2Q.app.picplease`. iOS only uses it once the app has the Associated Domains entitlement `applinks:picplease.app` (helper app, milestone 6). Apple fetches it through its CDN: `https://app-site-association.cdn-apple.com/a/v1/picplease.app` shows what Apple sees.
+- `apple-app-site-association`: `/s/*` opens `44NBW3DS2Q.app.picplease`. iOS only uses it once the app has the Associated Domains entitlement `applinks:picplease.app` and handles the link (mobile milestone 7, "Shell and links": deep links, docs/mobile/shell.md). Apple fetches it through its CDN: `https://app-site-association.cdn-apple.com/a/v1/picplease.app` shows what Apple sees.
 - `assetlinks.json`: `[]` until the Android signing fingerprints exist (docs/open-items.md). With an empty list, Android opens links in the browser, which shows this page.
 
 ## Real-device check (owner, after the first deploy)
