@@ -15,6 +15,7 @@ All under `web/src/`. One file, one job.
 | compressor.ts | Canvas resize (one draw, already scaled to 1920 px) and JPEG encode at 0.7, then 0.5 and 0.35 only if over the size limit; returns a Blob under the limit and releases the canvas |
 | uploader.ts | Max in flight from the claim limits (counted locally), compress and URL request in parallel, PUT to R2 with exactly the signed headers, confirm, retries; reports counts (`inFlight`, `sent`, `failed`) and a stop reason (`finished` = no new photos, those with a URL finish; `gone` = abort everything) |
 | realtime.ts | Optional WebSocket, first-message auth, close codes 4401 and 4410 |
-| screens/ | One small file per screen state, plain DOM, no framework |
+| flow.ts | Actions after the claim: allowCamera, shoot (offline, full, stopped), finishTapped, sessionFinished, sessionEnded, setOnline; owns the uploader and the camera stream |
+| screens/ | One small file per screen state, plain DOM, no framework; `render.ts` mounts the current one, `text.ts` holds every string (from ui-wording.md), `getApp.ts` the store links, `dom.ts` the element helper |
 
 Dependencies point downward: screens use state and the modules; modules never import screens.

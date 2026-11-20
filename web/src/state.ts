@@ -1,6 +1,7 @@
 /** Single state object and a tiny subscribe function. Screen names from docs/web/flow-and-states.md. */
 import type { Limits } from './api';
 import type { CameraProblem } from './camera';
+import type { UploaderCounts } from './uploader';
 
 export type Screen =
   | 'opening'
@@ -31,6 +32,9 @@ export interface AppState {
   codeProblem: CodeProblemReason | null;
   /** Why noCamera shows: denied (allow it in settings) or unavailable (no usable camera). */
   cameraProblem: CameraProblem | null;
+  uploads: UploaderCounts;
+  /** From the browser's online and offline events; the shutter is blocked while offline. */
+  online: boolean;
 }
 
 export type Listener = (state: Readonly<AppState>) => void;
@@ -46,6 +50,8 @@ export const INITIAL_STATE: AppState = {
   session: null,
   codeProblem: null,
   cameraProblem: null,
+  uploads: { inFlight: 0, sent: 0, failed: 0 },
+  online: true,
 };
 
 export function createStore(initial: AppState = INITIAL_STATE): Store {

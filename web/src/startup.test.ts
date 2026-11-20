@@ -83,7 +83,7 @@ describe('startup', () => {
       `https://picplease.app/s/${OTHER_ID}#${SECRET}`,
       claimFails('NOT_FOUND', 404),
     );
-    expect(wrongSecret).toEqual({
+    expect(wrongSecret).toMatchObject({
       screen: 'codeProblem',
       session: null,
       codeProblem: 'invalid',
@@ -114,7 +114,7 @@ describe('startup', () => {
   it('a link with no secret is codeProblem without calling the API (test 2)', async () => {
     const fetch = fakeFetch({ status: 500 });
     const state = await run(`https://picplease.app/s/${ID}`, fetch);
-    expect(state).toEqual({
+    expect(state).toMatchObject({
       screen: 'codeProblem',
       session: null,
       codeProblem: 'invalid',

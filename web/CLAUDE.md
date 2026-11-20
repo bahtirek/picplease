@@ -3,10 +3,10 @@
 Read docs/web/overview.md first; other docs/web files only when the slice needs them.
 
 ## Rules
-- Vite, strict TypeScript, Vitest, ESLint, Prettier, plain DOM, no runtime dependencies. Ask before adding any dependency.
+- Vite, strict TypeScript, Vitest (happy-dom for screen tests, via `// @vitest-environment happy-dom`), ESLint, Prettier, plain DOM, no runtime dependencies. Ask before adding any dependency.
 - Camera stream only: no file inputs, no gallery.
 - Token in sessionStorage only. Never log tokens or secrets. Remove the secret from the address bar after reading.
-- Only wording from docs/mobile/ui-wording.md.
+- Only wording from docs/mobile/ui-wording.md, kept in src/screens/text.ts.
 - Gzip JS plus CSS stays under 40 KB.
 - Never push. Commit at the end of every slice (owner decision 2026-11-19).
 

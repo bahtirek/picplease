@@ -6,7 +6,7 @@ Status: W1 (scaffold) done. Values marked (proposed) can still change.
 Fallback for helpers who do not have the app. The helper scans the QR code, the link opens `https://picplease.app/s/<sessionId>#<secret>` in the phone browser, the helper takes live photos, and each photo uploads straight to R2. The traveler's app receives them. The page never shows a gallery and never lets the helper pick existing files (camera stream only, no file input).
 
 ## Stack
-- Vite, TypeScript strict, Vitest. No runtime dependencies. Ask before adding any.
+- Vite, TypeScript strict, Vitest (happy-dom for the screen tests only, owner-approved in W5). No runtime dependencies. Ask before adding any.
 - Size budget: 40 KB gzip for all JS and CSS (proposed).
 - Static files served by Nginx at picplease.app. `/s/*` serves `index.html`.
 - Talks to `https://api.picplease.app` (CORS: only `https://picplease.app`). Photos PUT directly to R2 (R2 CORS allows PUT from `https://picplease.app`).
@@ -25,4 +25,4 @@ Fallback for helpers who do not have the app. The helper scans the QR code, the 
 - Commit at the end of every web slice (as in the root CLAUDE.md).
 - Link format: the secret goes in the fragment, `https://picplease.app/s/<sessionId>#<secret>`, so it never reaches a server, a log or a Referer. Switched in slice L1 (backend link builder and tests, iOS fixtures, docs).
 - Leaving the page: finish is sent the way the backend expects, a JSON body `{ "token": "...", "graceSeconds": 30 }` (the guard reads `token` from the body; the backend has no text/plain parser). The send mechanism (`fetch` with `keepalive` or `sendBeacon` with a JSON Blob) is chosen and checked on real devices in W6.
-- Flow and wording: the same as the helper flow in the mobile app (docs/mobile/helper.md, ui-wording.md): shoot back to back, a brief "Sending…" toast, "All 5 sending, one second…" when 5 are in flight, Finish, then Wrap-up "Thanks for helping! Still sending in the background." with "Done", and the Session ended modal. The web-only extras (camera permission, no camera, "Get the app") need wording added to ui-wording.md in W5. W5 aligns flow-and-states.md with this.
+- Flow and wording: the same as the helper flow in the mobile app (docs/mobile/helper.md, ui-wording.md): shoot back to back, a brief "Sending…" toast, "All 5 sending, one second…" when 5 are in flight, Finish, the Session ended message. Web differences (W5, owner-approved): after Finish the page shows "Sending photo, please keep this open." until every photo is sent (closing the tab stops uploads), then "Thanks for helping!" with Get the app; web-only screens (camera access, no camera, Get the app) have their own rows in ui-wording.md. States: flow-and-states.md.

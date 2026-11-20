@@ -8,12 +8,14 @@ describe('state', () => {
     const listener = vi.fn();
     const unsubscribe = store.subscribe(listener);
     store.set({ screen: 'codeProblem', codeProblem: 'used' });
-    expect(listener).toHaveBeenCalledWith({
-      screen: 'codeProblem',
-      session: null,
-      codeProblem: 'used',
-      cameraProblem: null,
-    });
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        screen: 'codeProblem',
+        session: null,
+        codeProblem: 'used',
+        cameraProblem: null,
+      }),
+    );
     unsubscribe();
     store.set({ screen: 'opening' });
     expect(listener).toHaveBeenCalledTimes(1);
