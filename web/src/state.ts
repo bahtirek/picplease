@@ -1,5 +1,6 @@
 /** Single state object and a tiny subscribe function. Screen names from docs/web/flow-and-states.md. */
 import type { Limits } from './api';
+import type { CameraProblem } from './camera';
 
 export type Screen =
   | 'opening'
@@ -28,6 +29,8 @@ export interface AppState {
   screen: Screen;
   session: HelperSession | null;
   codeProblem: CodeProblemReason | null;
+  /** Why noCamera shows: denied (allow it in settings) or unavailable (no usable camera). */
+  cameraProblem: CameraProblem | null;
 }
 
 export type Listener = (state: Readonly<AppState>) => void;
@@ -38,7 +41,12 @@ export interface Store {
   subscribe(listener: Listener): () => void;
 }
 
-export const INITIAL_STATE: AppState = { screen: 'opening', session: null, codeProblem: null };
+export const INITIAL_STATE: AppState = {
+  screen: 'opening',
+  session: null,
+  codeProblem: null,
+  cameraProblem: null,
+};
 
 export function createStore(initial: AppState = INITIAL_STATE): Store {
   let state: Readonly<AppState> = Object.freeze({ ...initial });

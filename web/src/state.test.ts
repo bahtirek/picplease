@@ -12,6 +12,7 @@ describe('state', () => {
       screen: 'codeProblem',
       session: null,
       codeProblem: 'used',
+      cameraProblem: null,
     });
     unsubscribe();
     store.set({ screen: 'opening' });

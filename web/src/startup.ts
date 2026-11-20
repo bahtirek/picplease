@@ -14,7 +14,7 @@ export interface StartupDeps {
 
 export async function start(deps: StartupDeps): Promise<void> {
   const { store, tokens } = deps;
-  store.set({ screen: 'opening', session: null, codeProblem: null });
+  store.set({ screen: 'opening', session: null, codeProblem: null, cameraProblem: null });
 
   const link = readLink(deps.location, deps.history);
   if (!link) {

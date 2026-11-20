@@ -83,7 +83,12 @@ describe('startup', () => {
       `https://picplease.app/s/${OTHER_ID}#${SECRET}`,
       claimFails('NOT_FOUND', 404),
     );
-    expect(wrongSecret).toEqual({ screen: 'codeProblem', session: null, codeProblem: 'invalid' });
+    expect(wrongSecret).toEqual({
+      screen: 'codeProblem',
+      session: null,
+      codeProblem: 'invalid',
+      cameraProblem: null,
+    });
     expect(unknown).toEqual(wrongSecret);
   });
 
@@ -109,7 +114,12 @@ describe('startup', () => {
   it('a link with no secret is codeProblem without calling the API (test 2)', async () => {
     const fetch = fakeFetch({ status: 500 });
     const state = await run(`https://picplease.app/s/${ID}`, fetch);
-    expect(state).toEqual({ screen: 'codeProblem', session: null, codeProblem: 'invalid' });
+    expect(state).toEqual({
+      screen: 'codeProblem',
+      session: null,
+      codeProblem: 'invalid',
+      cameraProblem: null,
+    });
     expect(fetch.calls).toHaveLength(0);
   });
 
