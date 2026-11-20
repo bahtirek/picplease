@@ -20,3 +20,4 @@ ios/**/.swiftpm/
 *.p12
 *.cer
 *.mobileprovision
+!web/.env.production

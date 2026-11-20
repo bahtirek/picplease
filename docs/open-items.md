@@ -11,4 +11,4 @@ Minimum Android version (iOS 17 decided; iOS first decided). Flash and front-cam
 ## Also pending
 
 - The Android signing fingerprints, needed for the app-link files (Apple Team ID: 44NBW3DS2Q).
-- The helper web page has no brief yet.
+- Helper web page: wording for camera permission, no camera and "Get the app" (W5); store URLs for "Get the app".

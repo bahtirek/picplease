@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}

@@ -20,5 +20,5 @@ Read only what the current task needs. Do not load everything.
 | Mobile decisions, wording, structure | docs/mobile/decisions.md, ui-wording.md, structure.md |
 | Mobile shared core, requester, helper, shell | docs/mobile/core.md, requester.md, helper.md, shell.md |
 | Mobile test cases and build order | docs/mobile/tests.md, milestones.md |
+| Helper web page (web/): start here, then the file the slice names | docs/web/overview.md, slices.md |
 
-Not written yet: the helper web page (web/) brief.
