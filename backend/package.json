@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json && rm -rf dist/src/database/migrations && cp -R src/database/migrations dist/src/database/migrations && node dist/scripts/write-build-info.js",
     "start": "node dist/src/main.js",
-    "start:dev": "nest start --watch",
+    "start:dev": "node --env-file-if-exists=.env node_modules/@nestjs/cli/bin/nest.js start --watch",
     "migrate": "npm run build && node --env-file-if-exists=.env dist/scripts/migrate.js",
     "lint": "eslint .",
     "format": "prettier --write .",
