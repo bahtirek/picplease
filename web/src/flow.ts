@@ -88,6 +88,22 @@ export class HelperFlow {
     this.deps.store.set({ online });
   }
 
+  /** The page was hidden: release the camera (browsers pause or end it anyway). */
+  pauseCamera(): void {
+    stopCamera(this.stream);
+    this.stream = null;
+  }
+
+  /** The page is visible again while shooting: open the camera again (or noCamera). */
+  async resumeCamera(): Promise<void> {
+    if (this.deps.store.get().screen !== 'shooting' || this.stream) return;
+    this.stream = await enableCamera({
+      store: this.deps.store,
+      video: this.deps.video,
+      devices: this.deps.devices,
+    });
+  }
+
   private ensureUploader(): Uploader {
     if (this.uploader) return this.uploader;
     const session = this.deps.store.get().session;

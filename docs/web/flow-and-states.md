@@ -25,7 +25,8 @@ Wording for each is in docs/mobile/ui-wording.md (web rows). Finish (mobile way 
 
 ## Leaving the page
 - Finish tapped: wait for the uploads, then call finish with no grace.
-- Tab hidden or closed: send finish with a 30 second grace as a JSON body `{ "token": "...", "graceSeconds": 30 }` (owner decision 2026-11-19: what the backend expects; mechanism chosen in W6, see overview.md).
-- Page visible again within the grace: call resume.
-- 2 minutes idle: finish.
-- WebSocket (optional for the helper) is used only to learn the session ended; on close 4401 or 4410 go to `ended`.
+- Tab hidden or closed (`visibilitychange` to hidden, or `pagehide`), while shooting or sending: send finish with a 30 second grace once per hidden period, as a JSON body `{ "token": "...", "graceSeconds": 30 }` (owner decision 2026-11-19: what the backend expects; its guard reads `token` from the body). Sent with `fetch(..., { keepalive: true })`, falling back to `navigator.sendBeacon` with an `application/json` Blob. Both need a CORS preflight (JSON content type); the real-device check in W7 must confirm the request lands on iPhone Safari and Android Chrome. The camera is released while hidden.
+- Visible again within the grace: call resume, then reopen the camera. Resume answering SESSION_FINISHED wraps up (sending, then thanks); SESSION_GONE or UNAUTHORIZED goes to ended; no answer carries on.
+- Visible again after the grace: wrap up as finished without calling resume (mobile way B).
+- 2 minutes on the camera screen with no upload activity (no shot, no count change) and nothing in flight: finish (the same as Finish tapped). The server's own idle rule is the backstop.
+- WebSocket (optional) from the claim until thanks or ended: `session.finished`, or a snapshot in `finished`, wraps up; `session.ended`, a snapshot in revoked, expired or closed, or close 4401 or 4410 goes to `ended`. Other closes reconnect after 1, 2, 4, 8, 16, 30 s times 0.5 to 1.0, reset by each snapshot.
