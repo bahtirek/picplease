@@ -69,7 +69,7 @@ describe('UploadsService', () => {
 
   async function created(): Promise<{ id: string; secret: string }> {
     const s = await sessions.createSession();
-    return { id: s.sessionId, secret: new URL(s.link).searchParams.get('t') ?? '' };
+    return { id: s.sessionId, secret: new URL(s.link).hash.slice(1) };
   }
 
   async function claimed(): Promise<string> {

@@ -51,7 +51,7 @@ describe('sessions API (e2e)', () => {
     const res = await call('POST', '/sessions');
     expect(res.statusCode).toBe(200);
     const body = res.json<{ sessionId: string; link: string; requesterToken: string }>();
-    const secret = new URL(body.link).searchParams.get('t') ?? '';
+    const secret = new URL(body.link).hash.slice(1);
     return { ...body, secret };
   }
 
@@ -66,7 +66,7 @@ describe('sessions API (e2e)', () => {
 
   it('create, claim, status, finish with grace, resume, finish', async () => {
     const s = await create();
-    expect(s.link).toMatch(/^https:\/\/picplease\.app\/s\/[0-9a-f-]{36}\?t=[\w-]{43}$/);
+    expect(s.link).toMatch(/^https:\/\/picplease\.app\/s\/[0-9a-f-]{36}#[\w-]{43}$/);
     expect(await state(s.sessionId, s.requesterToken)).toBe('pending');
 
     const helper = await claim(s.sessionId, s.secret);

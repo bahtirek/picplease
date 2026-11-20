@@ -15,7 +15,7 @@ public struct AppConfig: Sendable, Equatable {
     public let apiBaseURL: URL
     /// WebSocket endpoint (`/ws`).
     public let realtimeURL: URL
-    /// Host of pairing links (`https://picplease.app/s/{session}?t={secret}`).
+    /// Host of pairing links (`https://picplease.app/s/{session}#{secret}`; the secret is the fragment).
     public let linkHost: String
     /// Per-request timeout for API calls.
     public let requestTimeout: TimeInterval

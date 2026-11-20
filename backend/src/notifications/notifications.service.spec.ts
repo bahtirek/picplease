@@ -60,7 +60,7 @@ describe('Notifications', () => {
 
   async function claimed(): Promise<string> {
     const s = await sessions.createSession();
-    await sessions.claimSession(s.sessionId, new URL(s.link).searchParams.get('t') ?? '');
+    await sessions.claimSession(s.sessionId, new URL(s.link).hash.slice(1));
     return s.sessionId;
   }
 

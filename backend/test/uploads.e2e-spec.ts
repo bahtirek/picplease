@@ -49,7 +49,7 @@ describe('uploads API (e2e)', () => {
       link: string;
       requesterToken: string;
     }>();
-    const secret = new URL(created.link).searchParams.get('t') ?? '';
+    const secret = new URL(created.link).hash.slice(1);
     const claim = await call('POST', `/sessions/${created.sessionId}/claim`, undefined, { secret });
     return { ...created, helperToken: claim.json<{ helperToken: string }>().helperToken };
   }

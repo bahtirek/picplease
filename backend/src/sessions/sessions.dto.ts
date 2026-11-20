@@ -14,7 +14,7 @@ export class LimitsDto {
 
 export class CreateSessionResponse {
   @ApiProperty({ format: 'uuid' }) sessionId!: string;
-  @ApiProperty({ description: 'https://picplease.app/s/{sessionId}?t={pairingSecret}' })
+  @ApiProperty({ description: 'https://picplease.app/s/{sessionId}#{pairingSecret}' })
   link!: string;
   @ApiProperty({ description: 'QR code of the link, PNG, base64' }) qrPngBase64!: string;
   @ApiProperty({ description: 'Bearer token for requester calls. Shown once.' })

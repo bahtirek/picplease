@@ -64,7 +64,7 @@ describe('SessionsService', () => {
   /** A created session plus the pairing secret taken from its link. */
   async function created() {
     const result = await service.createSession();
-    const secret = new URL(result.link).searchParams.get('t') ?? '';
+    const secret = new URL(result.link).hash.slice(1);
     return { ...result, secret };
   }
 
@@ -78,7 +78,7 @@ describe('SessionsService', () => {
     const s = await created();
     const random = s.requesterToken.split('.')[1] ?? '';
 
-    expect(s.link).toBe(`https://picplease.app/s/${s.sessionId}?t=${s.secret}`);
+    expect(s.link).toBe(`https://picplease.app/s/${s.sessionId}#${s.secret}`);
     expect(Buffer.from(s.qrPngBase64, 'base64').subarray(1, 4).toString()).toBe('PNG');
     expect(s.limits).toEqual({
       maxInFlight: 5,

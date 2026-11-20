@@ -82,7 +82,7 @@ enum Samples {
 
     static func created(_ id: String, expiresIn: TimeInterval = 300) -> CreatedSession {
         CreatedSession(
-            sessionId: id, link: URL(string: "https://picplease.app/s/\(id)?t=secret")!,
+            sessionId: id, link: URL(string: "https://picplease.app/s/\(id)#secret")!,
             qrPngBase64: Data("png".utf8).base64EncodedString(), requesterToken: "\(id).random",
             expiresAt: date.addingTimeInterval(expiresIn), limits: .fallback)
     }

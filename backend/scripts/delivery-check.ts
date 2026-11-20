@@ -73,7 +73,7 @@ async function main(): Promise<void> {
       '/sessions',
     );
     const { sessionId, requesterToken } = created.body;
-    const secret = new URL(created.body.link).searchParams.get('t') ?? '';
+    const secret = new URL(created.body.link).hash.slice(1);
     check('create session', created.status === 201 || created.status === 200);
 
     // Requester listens on the WebSocket.

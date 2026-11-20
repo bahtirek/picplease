@@ -98,7 +98,7 @@ describe('Jobs', () => {
 
   async function claimed(): Promise<string> {
     const s = await sessions.createSession();
-    await sessions.claimSession(s.sessionId, new URL(s.link).searchParams.get('t') ?? '');
+    await sessions.claimSession(s.sessionId, new URL(s.link).hash.slice(1));
     return s.sessionId;
   }
 
@@ -136,7 +136,7 @@ describe('Jobs', () => {
   it('session.claimed cancels the pairing timer', async () => {
     const s = await sessions.createSession();
     await until(async () => (await timers(QUEUES.expirePairing, s.sessionId)) === 1);
-    await sessions.claimSession(s.sessionId, new URL(s.link).searchParams.get('t') ?? '');
+    await sessions.claimSession(s.sessionId, new URL(s.link).hash.slice(1));
     expect(await until(async () => (await timers(QUEUES.expirePairing, s.sessionId)) === 0)).toBe(
       true,
     );

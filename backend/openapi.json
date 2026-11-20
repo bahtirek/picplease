@@ -477,7 +477,7 @@
           },
           "link": {
             "type": "string",
-            "description": "https://picplease.app/s/{sessionId}?t={pairingSecret}"
+            "description": "https://picplease.app/s/{sessionId}#{pairingSecret}"
           },
           "qrPngBase64": {
             "type": "string",

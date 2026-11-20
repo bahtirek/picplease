@@ -23,6 +23,6 @@ Fallback for helpers who do not have the app. The helper scans the QR code, the 
 ## Owner decisions (2026-11-19)
 - Lint and format: ESLint and Prettier, same versions and config as backend/.
 - Commit at the end of every web slice (as in the root CLAUDE.md).
-- Link format: the secret goes in the fragment, `https://picplease.app/s/<sessionId>#<secret>`, so it never reaches a server, a log or a Referer. The backend link builder and the iOS deep-link parser still use `?t=` and must switch first (slice L1 in slices.md).
+- Link format: the secret goes in the fragment, `https://picplease.app/s/<sessionId>#<secret>`, so it never reaches a server, a log or a Referer. Switched in slice L1 (backend link builder and tests, iOS fixtures, docs).
 - Leaving the page: finish is sent the way the backend expects, a JSON body `{ "token": "...", "graceSeconds": 30 }` (the guard reads `token` from the body; the backend has no text/plain parser). The send mechanism (`fetch` with `keepalive` or `sendBeacon` with a JSON Blob) is chosen and checked on real devices in W6.
 - Flow and wording: the same as the helper flow in the mobile app (docs/mobile/helper.md, ui-wording.md): shoot back to back, a brief "Sending…" toast, "All 5 sending, one second…" when 5 are in flight, Finish, then Wrap-up "Thanks for helping! Still sending in the background." with "Done", and the Session ended modal. The web-only extras (camera permission, no camera, "Get the app") need wording added to ui-wording.md in W5. W5 aligns flow-and-states.md with this.

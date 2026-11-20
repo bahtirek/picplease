@@ -6,7 +6,7 @@
 | Build order | One platform first, then port. iOS first (owner decision, 2026-11-18), because its background limits are tighter. |
 | Architecture | MVVM. Each screen has a view and a view model. Both platforms use the same logical file names, so this brief describes both. |
 | App identifier | `app.picplease` on both platforms (owner decision, 2026-11-18; hard to change after publishing). iOS test bundle `app.picplease.tests`. |
-| Domains | Links `https://picplease.app/s/{session}?t={secret}`. API and WebSocket `https://api.picplease.app`. |
+| Domains | Links `https://picplease.app/s/{session}#{secret}` (secret in the fragment, owner decision 2026-11-19). API and WebSocket `https://api.picplease.app`. |
 | API client | Hand-written `ApiClient` and hand-written Codable models that mirror backend/openapi.json (owner decision, 2026-11-18: no generator). |
 | Live connection | Plain WebSocket, no Socket.IO |
 | Offline | No connection, no help: the helper's shutter is disabled offline. Uploads already handed to the OS survive drops. |

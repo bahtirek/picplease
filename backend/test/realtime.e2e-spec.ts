@@ -71,7 +71,7 @@ describe('realtime (e2e)', () => {
       link: string;
       requesterToken: string;
     }>();
-    return { ...body, secret: new URL(body.link).searchParams.get('t') ?? '' };
+    return { ...body, secret: new URL(body.link).hash.slice(1) };
   }
 
   async function claim(id: string, secret: string): Promise<string> {

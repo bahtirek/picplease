@@ -75,7 +75,7 @@ import Testing
 
     @Test func unknownResponseFieldsIgnored() async throws {
         let body = """
-            {"sessionId":"\(sessionId)","link":"https://picplease.app/s/\(sessionId)?t=abc",
+            {"sessionId":"\(sessionId)","link":"https://picplease.app/s/\(sessionId)#abc",
              "qrPngBase64":"iVBORw0=","requesterToken":"tok","expiresAt":"2026-11-18T10:10:00.000Z",
              "limits":{"maxInFlight":5,"maxPhotoBytes":5242880,"uploadUrlTtlSeconds":600,
                        "downloadUrlTtlSeconds":600,"somethingNew":1},

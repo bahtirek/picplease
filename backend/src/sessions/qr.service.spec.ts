@@ -1,7 +1,7 @@
 import { QrService } from './qr.service';
 
 describe('QrService', () => {
-  const link = 'https://picplease.app/s/3428da7f-d9f8-48a5-879b-971b2e1c3a54?t=' + 'a'.repeat(43);
+  const link = 'https://picplease.app/s/3428da7f-d9f8-48a5-879b-971b2e1c3a54#' + 'a'.repeat(43);
   const qr = new QrService();
 
   it('renders the link as a PNG and as SVG', async () => {

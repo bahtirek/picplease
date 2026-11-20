@@ -11,4 +11,4 @@ Files: `sessions.controller.ts`, `sessions.service.ts`, `sessions.module.ts`, `s
 - `expirePending(id)` (called by Jobs), `markClosed(id)` (called by Delivery), `touchActivity(id)` (called by Uploads).
 - `session-state.ts`: `canTransition`, `assertTransition`, `isTerminal`, the transitions table.
 - `qr.service.ts`: `renderPng(link)` is the main output. `renderSvg(link)` optional.
-- QR link format: `https://picplease.app/s/{sessionId}?t={pairingSecret}`.
+- QR link format: `https://picplease.app/s/{sessionId}#{pairingSecret}`. The secret is the URL fragment, so a browser never sends it to a server, a log or a Referer (owner decision 2026-11-19, slice L1).

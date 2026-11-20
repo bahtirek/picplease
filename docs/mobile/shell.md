@@ -4,7 +4,7 @@
 - **App entry** (`PhotoHandoffApp`/`MainActivity`): `onLaunch` (build, restore, show Home), `onOpenLink`, `onPushTap`, `onBackgroundEvents` (iOS only).
 - **RootRouter**: `currentRole`, `show(role)`, `screenFor(state)`.
 - **Home**: two buttons, "Ask someone nearby" and "Help someone". `HomeViewModel` calls `startAsking()` or `startHelping()`.
-- **DeepLinkHandler**: `canHandle(url)` (our domain, `/s/` path), `handle(url)`. While idle it parses and starts the claim. While already helping or asking, it is ignored with a short message.
+- **DeepLinkHandler**: `canHandle(url)` (our domain, `/s/` path), `handle(url)` (session id from the path, secret from the fragment). While idle it parses and starts the claim. While already helping or asking, it is ignored with a short message.
 - **NotificationRouter**: a tap for the current session opens Receiving. A stale session goes Home.
 - **SessionRestorer**: `restoreAll`, `restoreRequester`, `restoreHelper`. Each loads the stored session and checks its status. If both roles have a live session, the helper wins.
 
