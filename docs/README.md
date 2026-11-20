@@ -21,4 +21,5 @@ Read only what the current task needs. Do not load everything.
 | Mobile shared core, requester, helper, shell | docs/mobile/core.md, requester.md, helper.md, shell.md |
 | Mobile test cases and build order | docs/mobile/tests.md, milestones.md |
 | Helper web page (web/): start here, then the file the slice names | docs/web/overview.md, slices.md |
+| Helper web page deploy, server setup and real-device check | docs/web/deploy.md |
 

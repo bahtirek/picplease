@@ -15,7 +15,9 @@ Run from web/ with Node 24 (`.nvmrc`; npm refuses other versions).
 - `npm install` — install dependencies
 - `cp .env.example .env.local` — dev config (API on localhost:3000); production values are in the committed `.env.production`
 - `npm run dev` — Vite dev server
-- `npm run build` — type-check, build to web/dist, then the size check (fails over 40 KB gzip JS plus CSS)
+- `npm run build` — type-check, build to web/dist, then the size check (fails over 40 KB gzip JS plus CSS) and the dist check
 - `npm run check:size` — size check alone on web/dist
+- `npm run check:dist` — dist fits the CSP (no inline scripts or styles, no other origins) and has valid app link files
+- `npm run deploy` — owner only: test, build HEAD, upload to the VPS, switch, check /version.json; `npm run deploy -- rollback` (docs/web/deploy.md)
 - `npm test` — all Vitest tests; `npm test -- <path>` for one file
 - `npm run lint` / `npm run format` / `npm run format:check`

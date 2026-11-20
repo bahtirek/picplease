@@ -8,13 +8,15 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && node scripts/check-size.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/check-size.mjs && node scripts/check-dist.mjs",
     "check:size": "node scripts/check-size.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "check:dist": "node scripts/check-dist.mjs",
+    "deploy": "bash deploy/deploy.sh"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -1,6 +1,6 @@
 # Web: helper page overview
 
-Status: W1 (scaffold) done. Values marked (proposed) can still change.
+Status: W1 to W7 built; the real-device check (docs/web/deploy.md) is pending. Values marked (proposed) can still change.
 
 ## Purpose
 Fallback for helpers who do not have the app. The helper scans the QR code, the link opens `https://picplease.app/s/<sessionId>#<secret>` in the phone browser, the helper takes live photos, and each photo uploads straight to R2. The traveler's app receives them. The page never shows a gallery and never lets the helper pick existing files (camera stream only, no file input).

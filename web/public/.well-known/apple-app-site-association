@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["44NBW3DS2Q.app.picplease"],
+        "components": [{ "/": "/s/*", "comment": "Pairing links; the secret is in the fragment" }]
+      }
+    ]
+  }
+}
