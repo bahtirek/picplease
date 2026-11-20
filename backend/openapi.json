@@ -509,7 +509,7 @@
         "properties": {
           "secret": {
             "type": "string",
-            "description": "The pairing secret from the QR link (t parameter)"
+            "description": "The pairing secret from the QR link (the part after #)"
           }
         },
         "required": [

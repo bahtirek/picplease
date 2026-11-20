@@ -24,7 +24,7 @@ export class CreateSessionResponse {
 }
 
 export class ClaimSessionBody {
-  @ApiProperty({ description: 'The pairing secret from the QR link (t parameter)' })
+  @ApiProperty({ description: 'The pairing secret from the QR link (the part after #)' })
   @IsString()
   @MinLength(1)
   @MaxLength(200)

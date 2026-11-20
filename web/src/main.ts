@@ -1,10 +1,23 @@
 import './style.css';
+import { ApiClient } from './api';
 import { loadConfig } from './config';
+import { start } from './startup';
+import { createStore } from './state';
+import { TokenStore } from './tokenStore';
 
-// W1 placeholder: checks the config and shows an empty page. Flow code arrives in W2 onwards.
-loadConfig(import.meta.env);
+const config = loadConfig(import.meta.env);
+const store = createStore();
 
+// Placeholder render until the screens arrive in W5.
 const app = document.getElementById('app');
-if (app) {
-  app.textContent = 'PicPlease';
-}
+store.subscribe((state) => {
+  if (app) app.textContent = state.screen;
+});
+
+void start({
+  location: window.location,
+  history: window.history,
+  api: new ApiClient({ baseUrl: config.apiBase }),
+  tokens: new TokenStore(),
+  store,
+});
